@@ -10,7 +10,7 @@ publish:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
-    repo: furybyname/drone-ecs
+    repo: plugins/drone-ecs
     when:
       branch: master
 
@@ -18,7 +18,7 @@ plugin:
   name: ECS
   desc: Deploys or updates a project on AWS ECS
   type: deploy
-  image: furybyname/drone-ecs
+  image: plugins/drone-ecs
   labels:
     - aws
     - paas

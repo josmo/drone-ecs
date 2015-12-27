@@ -9,7 +9,7 @@ Sample .drone.yml file
 ```
 deploy:
   ecs:
-    image: furybyname/drone-ecs
+    image: plugins/drone-ecs
 
     region: eu-west-1
     access_key_id: $$ACCESS_KEY_ID
@@ -79,7 +79,7 @@ make deps build docker
 ### Example
 
 ```sh
-docker run -i furybyname/drone-ecs <<EOF
+docker run -i plugins/drone-ecs <<EOF
 {
     "repo": {
         "clone_url": "git://github.com/drone/drone",
