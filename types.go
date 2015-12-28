@@ -5,14 +5,14 @@ import (
 )
 
 type Params struct {
-	AccessKeyID          string            `json:"access_key_id"`
-	SecretAccessKey      string            `json:"secret_access_key"`
-	Region               string            `json:"region"`
-	TaskName             string            `json:"task_name"`
-	Image                string            `json:"image_name"`
-	Tag                  string            `json:"image_tag"`
-	Service              string            `json:"service_name"`
-	Memory               string            `json:"memory"`
-	EnvironmentVariables drone.StringSlice `json:"environment_variables"`
-	PortMappings         drone.StringSlice `json:"port_mappings"`
+	AccessKey    string            `json:"access_key"`
+	SecretKey    string            `json:"secret_key"`
+	Region       string            `json:"region"`
+	Family       string            `json:"family"`
+	Image        string            `json:"image_name"`
+	Tag          string            `json:"image_tag"`
+	Service      string            `json:"service"`
+	Memory       string            `json:"memory"`
+	Environment  drone.StringSlice `json:"environment_variables"`
+	PortMappings drone.StringSlice `json:"port_mappings"`
 }

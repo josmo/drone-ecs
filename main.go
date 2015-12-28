@@ -33,14 +33,14 @@ func main() {
 	plugin.Param("vargs", &vargs)
 	plugin.MustParse()
 
-	if len(vargs.AccessKeyID) == 0 {
+	if len(vargs.AccessKey) == 0 {
 		fmt.Println("Please provide an access key")
 
 		os.Exit(1)
 		return
 	}
 
-	if len(vargs.SecretAccessKey) == 0 {
+	if len(vargs.SecretKey) == 0 {
 		fmt.Println("Please provide a secret key")
 
 		os.Exit(1)
@@ -54,13 +54,13 @@ func main() {
 		return
 	}
 
-	if len(vargs.TaskName) == 0 {
-		fmt.Println("Please provide a task name")
+	if len(vargs.Family) == 0 {
+		fmt.Println("Please provide a task definition family name")
 
 		os.Exit(1)
 		return
 	}
-	fmt.Println(vargs.TaskName)
+	fmt.Println(vargs.Family)
 
 	if len(vargs.Image) == 0 {
 		fmt.Println("Please provide an image name")
@@ -84,7 +84,7 @@ func main() {
 	svc := ecs.New(
 		session.New(&aws.Config{
 			Region:      aws.String(vargs.Region),
-			Credentials: credentials.NewStaticCredentials(vargs.AccessKeyID, vargs.SecretAccessKey, ""),
+			Credentials: credentials.NewStaticCredentials(vargs.AccessKey, vargs.SecretKey, ""),
 		}))
 
 	Image := vargs.Image + ":" + vargs.Tag
@@ -111,7 +111,7 @@ func main() {
 		Links:        []*string{},
 		Memory:       aws.Int64(memory),
 		MountPoints:  []*ecs.MountPoint{},
-		Name:         aws.String(vargs.TaskName),
+		//Name:         aws.String("String),
 		PortMappings: []*ecs.PortMapping{},
 
 		Ulimits: []*ecs.Ulimit{},
@@ -146,7 +146,7 @@ func main() {
 	}
 
 	// Environment variables
-	for _, envVar := range vargs.EnvironmentVariables.Slice() {
+	for _, envVar := range vargs.Environment.Slice() {
 		parts := strings.Split(envVar, "=")
 		pair := ecs.KeyValuePair{
 			Name:  aws.String(strings.Trim(parts[0], " ")),
@@ -159,7 +159,7 @@ func main() {
 			&definition,
 			// More values...
 		},
-		Family:  aws.String(vargs.TaskName), // Required
+		Family:  aws.String(vargs.Family), // Required
 		Volumes: []*ecs.Volume{},
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
