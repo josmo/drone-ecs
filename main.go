@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -98,22 +98,21 @@ func main() {
 	definition := ecs.ContainerDefinition{ // Required
 		Command: []*string{},
 
-		DnsSearchDomains: []*string{},
-		DnsServers: []*string{},
-		DockerLabels: map[string]*string{},
+		DnsSearchDomains:      []*string{},
+		DnsServers:            []*string{},
+		DockerLabels:          map[string]*string{},
 		DockerSecurityOptions: []*string{},
-		EntryPoint: []*string{},
-		Environment: []*ecs.KeyValuePair{},
-		Essential: aws.Bool(true),
-		ExtraHosts: []*ecs.HostEntry{},
+		EntryPoint:            []*string{},
+		Environment:           []*ecs.KeyValuePair{},
+		Essential:             aws.Bool(true),
+		ExtraHosts:            []*ecs.HostEntry{},
 
-		Image:    aws.String(Image),
-		Links: []*string{},
-		Memory: aws.Int64(memory),
-		MountPoints: []*ecs.MountPoint{},
-		Name: aws.String(vargs.TaskName),
+		Image:        aws.String(Image),
+		Links:        []*string{},
+		Memory:       aws.Int64(memory),
+		MountPoints:  []*ecs.MountPoint{},
+		Name:         aws.String(vargs.TaskName),
 		PortMappings: []*ecs.PortMapping{},
-
 
 		Ulimits: []*ecs.Ulimit{},
 		//User: aws.String("String"),
@@ -137,7 +136,7 @@ func main() {
 			return
 		}
 
-		pair := ecs.PortMapping {
+		pair := ecs.PortMapping{
 			ContainerPort: aws.Int64(containerPort),
 			HostPort:      aws.Int64(hostPort),
 			Protocol:      aws.String("TransportProtocol"),
@@ -156,11 +155,11 @@ func main() {
 		definition.Environment = append(definition.Environment, &pair)
 	}
 	params := &ecs.RegisterTaskDefinitionInput{
-	ContainerDefinitions: []*ecs.ContainerDefinition{ // Required
+		ContainerDefinitions: []*ecs.ContainerDefinition{ // Required
 			&definition,
 			// More values...
 		},
-		Family: aws.String(vargs.TaskName), // Required
+		Family:  aws.String(vargs.TaskName), // Required
 		Volumes: []*ecs.Volume{},
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
