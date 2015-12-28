@@ -60,7 +60,6 @@ func main() {
 		os.Exit(1)
 		return
 	}
-	fmt.Println(vargs.Family)
 
 	if len(vargs.Image) == 0 {
 		fmt.Println("Please provide an image name")
