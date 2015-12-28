@@ -75,9 +75,9 @@ func main() {
 		return
 	}
 
-	if len(vargs.Memory) == 0 {
+	if vargs.Memory == 0 {
 		fmt.Println("Memory not specified. Defaulting to 128")
-		vargs.Memory = "128"
+		vargs.Memory = 128
 	}
 
 	svc := ecs.New(
@@ -87,14 +87,8 @@ func main() {
 		}))
 
 	Image := vargs.Image + ":" + vargs.Tag
-	memory, memoryErr := strconv.ParseInt(vargs.Memory, 10, 64)
-	if memoryErr != nil {
-		fmt.Println(memoryErr.Error())
-		os.Exit(1)
-		return
-	}
 
-	definition := ecs.ContainerDefinition{ // Required
+	definition := ecs.ContainerDefinition{
 		Command: []*string{},
 
 		DnsSearchDomains:      []*string{},
@@ -106,10 +100,10 @@ func main() {
 		Essential:             aws.Bool(true),
 		ExtraHosts:            []*ecs.HostEntry{},
 
-		Image:        aws.String(Image),
-		Links:        []*string{},
-		Memory:       aws.Int64(memory),
-		MountPoints:  []*ecs.MountPoint{},
+		Image:       aws.String(Image),
+		Links:       []*string{},
+		Memory:      aws.Int64(vargs.Memory),
+		MountPoints: []*ecs.MountPoint{},
 		//Name:         aws.String("String),
 		PortMappings: []*ecs.PortMapping{},
 
@@ -146,7 +140,7 @@ func main() {
 
 	// Environment variables
 	for _, envVar := range vargs.Environment.Slice() {
-		parts := strings.Split(envVar, "=")
+		parts := strings.SplitN(envVar, "=", 2)
 		pair := ecs.KeyValuePair{
 			Name:  aws.String(strings.Trim(parts[0], " ")),
 			Value: aws.String(strings.Trim(parts[1], " ")),
@@ -154,18 +148,15 @@ func main() {
 		definition.Environment = append(definition.Environment, &pair)
 	}
 	params := &ecs.RegisterTaskDefinitionInput{
-		ContainerDefinitions: []*ecs.ContainerDefinition{ // Required
+		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
-			// More values...
 		},
-		Family:  aws.String(vargs.Family), // Required
+		Family:  aws.String(vargs.Family),
 		Volumes: []*ecs.Volume{},
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
 
 	if err != nil {
-		// Print the error, cast err to awserr.Error to get the Code and
-		// Message from an error.
 		fmt.Println(err.Error())
 
 		os.Exit(1)
@@ -174,19 +165,16 @@ func main() {
 
 	val := *(resp.TaskDefinition.TaskDefinitionArn)
 	sparams := &ecs.UpdateServiceInput{
-		Service:        aws.String(vargs.Service), // Required
+		Service:        aws.String(vargs.Service),
 		TaskDefinition: aws.String(val),
 	}
 	sresp, serr := svc.UpdateService(sparams)
 
 	if serr != nil {
-		// Print the error, cast err to awserr.Error to get the Code and
-		// Message from an error.
 		fmt.Println(serr.Error())
 		return
 	}
 
-	// Pretty-print the response data.
 	fmt.Println(sresp)
 
 	fmt.Println(resp)
