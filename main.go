@@ -80,7 +80,6 @@ func main() {
 	}
 
 	if vargs.Memory == 0 {
-		fmt.Println("Memory not specified. Defaulting to 128")
 		vargs.Memory = 128
 	}
 
