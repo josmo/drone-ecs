@@ -2,7 +2,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 
 ### Settings
 
-* `access_key` - AWS access key ID, MUST be an IAM user with the AmazonEC2ContainerRegistryPowerUser policy attached
+* `access_key` - AWS access key ID, MUST be an IAM user with the AmazonEC2ContainerServiceFullAccess policy attached
 * `secret_key` - AWS secret access key
 * `region` - AWS availability zone
 * `service` - Name of the service in the cluster, **MUST** be created already in ECS
