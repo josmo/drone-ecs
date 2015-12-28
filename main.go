@@ -119,7 +119,8 @@ func main() {
 
 	// Port mappings
 	for _, portMapping := range vargs.PortMappings.Slice() {
-		parts := strings.Split(portMapping, " ")
+		cleanedPortMapping := strings.Trim(portMapping, " ")
+		parts := strings.SplitN(cleanedPortMapping, " ", 2)
 		hostPort, hostPortErr := strconv.ParseInt(parts[0], 10, 64)
 		if hostPortErr != nil {
 			fmt.Println(hostPortErr.Error())
