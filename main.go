@@ -68,6 +68,10 @@ func main() {
 		return
 	}
 
+	if len(vargs.Tag) == 0 {
+		vargs.Tag = "latest"
+	}
+
 	if len(vargs.Service) == 0 {
 		fmt.Println("Please provide a service name")
 
