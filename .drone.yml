@@ -7,8 +7,8 @@ build:
 
 publish:
   docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASSWORD
+    username: drone
+    password: $$DOCKER_PASS
     email: $$DOCKER_EMAIL
     repo: plugins/drone-ecs
     when:
