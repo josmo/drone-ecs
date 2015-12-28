@@ -59,3 +59,5 @@ docker run -i plugins/drone-ecs <<EOF
 }
 EOF
 ```
+
+Logo.svg from [https://github.com/gilbarbara/logos/blob/master/logos/aws-ec2.svg](https://github.com/gilbarbara/logos/blob/master/logos/aws-ec2.svg)
