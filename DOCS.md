@@ -9,9 +9,9 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `family` - Family name of the task definition to create or update with a new revision
 * `image_name`, Container image to use, do not include the tag here
 * `image_tag` - Tag of the image to use, defaults to latest
-* `port_mappings` - Port mappings from host to container, format is "hostPort containerPort", protocol is automatically set to TransportProtocol
+* `port_mappings` - Port mappings from host to container, format is `hostPort containerPort`, protocol is automatically set to TransportProtocol
 * `memory`, Amount of memory to assign to the container, defaults to 128
-* `environment_variables` - List of Environment Variables to be passed to the container, format is "NAME=VALUE"
+* `environment_variables` - List of Environment Variables to be passed to the container, format is `NAME=VALUE`
 
 ## Example
 
