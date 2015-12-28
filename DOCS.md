@@ -21,12 +21,12 @@ deploy:
     image: plugins/drone-ecs
 
     region: eu-west-1
-    access_key_id: $$ACCESS_KEY_ID
-    secret_access_key: $$SECRET_ACCESS_KEY
-    task_name: my-ecs-task
+    access_key: $$ACCESS_KEY_ID
+    secret_key: $$SECRET_ACCESS_KEY
+    family: my-ecs-task
     image_name: namespace/repo
     image_tag: latest
-    service_name: my-ecs-service
+    service: my-ecs-service
     environment_variables:
       - DATABASE_URI=$$MY_DATABASE_URI
     port_mappings:
