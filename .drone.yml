@@ -1,22 +1,37 @@
 build:
   image: golang:1.5
+  environment:
+    - CGO_ENABLED=0
   commands:
     - make deps
+    - make vet
     - make build
     - make test
 
 publish:
+  coverage:
+    when:
+      branch: master
   docker:
-    username: drone
+    username: $$DOCKER_USER
     password: $$DOCKER_PASS
     email: $$DOCKER_EMAIL
     repo: plugins/drone-ecs
+    tag: latest
     when:
       branch: master
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: plugins/drone-ecs
+    tag: develop
+    when:
+      branch: develop
 
 plugin:
   name: ECS
-  desc: Deploys or updates a project on AWS ECS
+  desc: Deploy or update a project on AWS ECS
   type: deploy
   image: plugins/drone-ecs
   labels:
