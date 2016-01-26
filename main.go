@@ -15,12 +15,11 @@ import (
 )
 
 var (
-	build     string
 	buildDate string
 )
 
 func main() {
-	fmt.Printf("Drone ECS Plugin built at %s\n", buildDate)
+	fmt.Printf("Drone AWS ECS Plugin built at %s\n", buildDate)
 
 	workspace := drone.Workspace{}
 	repo := drone.Repo{}
@@ -103,10 +102,10 @@ func main() {
 		Essential:             aws.Bool(true),
 		ExtraHosts:            []*ecs.HostEntry{},
 
-		Image:       aws.String(Image),
-		Links:       []*string{},
-		Memory:      aws.Int64(vargs.Memory),
-		MountPoints: []*ecs.MountPoint{},
+		Image:        aws.String(Image),
+		Links:        []*string{},
+		Memory:       aws.Int64(vargs.Memory),
+		MountPoints:  []*ecs.MountPoint{},
 		Name:         aws.String(vargs.Family + "-container"),
 		PortMappings: []*ecs.PortMapping{},
 
