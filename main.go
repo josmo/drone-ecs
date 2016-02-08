@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	build     string
 	buildDate string
 )
 
@@ -76,6 +77,12 @@ func main() {
 
 		os.Exit(1)
 		return
+	}
+
+	if len(vargs.Cluster) == 0 {
+		fmt.Println("Cluster: default")
+	} else {
+		fmt.Printf("Cluster: %s\n", vargs.Cluster)
 	}
 
 	if vargs.Memory == 0 {
@@ -168,6 +175,7 @@ func main() {
 
 	val := *(resp.TaskDefinition.TaskDefinitionArn)
 	sparams := &ecs.UpdateServiceInput{
+		Cluster:        aws.String(vargs.Cluster),
 		Service:        aws.String(vargs.Service),
 		TaskDefinition: aws.String(val),
 	}
