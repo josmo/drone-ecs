@@ -175,6 +175,7 @@ func main() {
 
 	if serr != nil {
 		fmt.Println(serr.Error())
+		os.Exit(1)
 		return
 	}
 
