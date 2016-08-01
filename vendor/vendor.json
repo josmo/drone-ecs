@@ -1,0 +1,19 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "RtvjNFDiM9Az32T+8iG0zESjhV0=",
+			"path": "github.com/drone/drone-go/drone",
+			"revision": "eaa41f7836a191224ec5702d2458db07882ec269",
+			"revisionTime": "2016-05-02T15:17:58Z"
+		},
+		{
+			"checksumSHA1": "TDXthey6NIe/nhc/YWYNuRCX38Q=",
+			"path": "github.com/drone/drone-go/plugin",
+			"revision": "eaa41f7836a191224ec5702d2458db07882ec269",
+			"revisionTime": "2016-05-02T15:17:58Z"
+		},
+	],
+	"rootPath": "github.com/drone-plugins/drone-ecs"
+}

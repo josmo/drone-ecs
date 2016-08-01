@@ -16,4 +16,7 @@ type Params struct {
 	Memory       int64             `json:"memory"`
 	Environment  drone.StringSlice `json:"environment_variables"`
 	PortMappings drone.StringSlice `json:"port_mappings"`
+	DockerLabels drone.StringSlice `json:"docker_labels"`
+	LogDriver    string            `json:"log_driver"`
+	LogOptions   drone.StringSlice `json:"log_options"`
 }
