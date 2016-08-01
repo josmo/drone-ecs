@@ -35,7 +35,7 @@ make deps build
         "finished_at": 1421029813,
         "message": "Update the Readme",
         "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
+        "author_email": "john.smith@gmail.com",
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
@@ -55,11 +55,19 @@ make deps build
         "service": "my-ecs-service",
         "environment_variables": [
             "DATABASE_URI=$$MY_DATABASE_URI"
-        ]
+        ],
         "port_mappings": [
           "80 9000"
         ],
-        "memory": "128"
+        "memory": 128,
+        "log_driver": "awslogs",
+        "log_options": [
+            "awslogs-group=test",
+            "awslogs-region=us-east-1"
+        ],
+        "docker_labels": [
+            "test=yes"
+        ]
     }
 }
 EOF
@@ -94,7 +102,7 @@ docker run -i plugins/drone-ecs <<EOF
         "finished_at": 1421029813,
         "message": "Update the Readme",
         "author": "johnsmith",
-        "author_email": "john.smith@gmail.com"
+        "author_email": "john.smith@gmail.com",
         "event": "push",
         "branch": "master",
         "commit": "436b7a6e2abaddfd35740527353e78a227ddcb2c",
@@ -114,11 +122,19 @@ docker run -i plugins/drone-ecs <<EOF
         "service": "my-ecs-service",
         "environment_variables": [
             "DATABASE_URI=$$MY_DATABASE_URI"
-        ]
+        ],
         "port_mappings": [
           "80 9000"
         ],
-        "memory": "128"
+        "memory": 128,
+        "log_driver": "awslogs",
+        "log_options": [
+            "awslogs-group=test",
+            "awslogs-region=us-east-1"
+        ],
+        "docker_labels": [
+            "test=yes"
+        ]
     }
 }
 EOF
