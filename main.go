@@ -84,6 +84,10 @@ func main() {
 		fmt.Printf("Cluster: %s\n", vargs.Cluster)
 	}
 
+	if len(vargs.ContainerName) == 0 {
+		vargs.ContainerName = vargs.Family + "-container"
+	}
+
 	if vargs.Memory == 0 {
 		vargs.Memory = 128
 	}
@@ -112,7 +116,7 @@ func main() {
 		Links:        []*string{},
 		Memory:       aws.Int64(vargs.Memory),
 		MountPoints:  []*ecs.MountPoint{},
-		Name:         aws.String(vargs.Family + "-container"),
+		Name:         aws.String(vargs.ContainerName),
 		PortMappings: []*ecs.PortMapping{},
 
 		Ulimits: []*ecs.Ulimit{},
