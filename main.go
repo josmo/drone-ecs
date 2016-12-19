@@ -25,26 +25,13 @@ func main() {
 	repo := drone.Repo{}
 	build := drone.Build{}
 	vargs := Params{}
+	awsConfig := aws.Config{}
 
 	plugin.Param("workspace", &workspace)
 	plugin.Param("repo", &repo)
 	plugin.Param("build", &build)
 	plugin.Param("vargs", &vargs)
 	plugin.MustParse()
-
-	if len(vargs.AccessKey) == 0 {
-		fmt.Println("Please provide an access key")
-
-		os.Exit(1)
-		return
-	}
-
-	if len(vargs.SecretKey) == 0 {
-		fmt.Println("Please provide a secret key")
-
-		os.Exit(1)
-		return
-	}
 
 	if len(vargs.Region) == 0 {
 		fmt.Println("Please provide a region")
@@ -78,6 +65,10 @@ func main() {
 		return
 	}
 
+	if len(vargs.AccessKey) != 0 && len(vargs.SecretKey) != 0 {
+		awsConfig.Credentials = credentials.NewStaticCredentials(vargs.AccessKey, vargs.SecretKey, "")
+	}
+
 	if len(vargs.Cluster) == 0 {
 		fmt.Println("Cluster: default")
 	} else {
@@ -88,11 +79,8 @@ func main() {
 		vargs.Memory = 128
 	}
 
-	svc := ecs.New(
-		session.New(&aws.Config{
-			Region:      aws.String(vargs.Region),
-			Credentials: credentials.NewStaticCredentials(vargs.AccessKey, vargs.SecretKey, ""),
-		}))
+	awsConfig.Region = aws.String(vargs.Region)
+	svc := ecs.New(session.New(&awsConfig))
 
 	Image := vargs.Image + ":" + vargs.Tag
 
