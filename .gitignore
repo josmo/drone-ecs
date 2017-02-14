@@ -23,5 +23,7 @@ _testmain.go
 *.test
 *.prof
 
+.idea
+
 coverage.out
 drone-ecs
