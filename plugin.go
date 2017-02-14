@@ -70,12 +70,12 @@ func (p *Plugin) Exec() error {
 		hostPort, hostPortErr := strconv.ParseInt(parts[0], 10, 64)
 		if hostPortErr != nil {
 			fmt.Println(hostPortErr.Error())
-			return nil, hostPortErr
+			return hostPortErr
 		}
 		containerPort, containerPortError := strconv.ParseInt(parts[1], 10, 64)
 		if containerPortError != nil {
 			fmt.Println(containerPortError.Error())
-			return nil, containerPortError
+			return containerPortError
 		}
 
 		pair := ecs.PortMapping{
@@ -107,7 +107,7 @@ func (p *Plugin) Exec() error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return nil, err
+		return err
 	}
 
 	val := *(resp.TaskDefinition.TaskDefinitionArn)
@@ -120,7 +120,7 @@ func (p *Plugin) Exec() error {
 
 	if serr != nil {
 		fmt.Println(serr.Error())
-		return nil, serr
+		return serr
 	}
 
 	fmt.Println(sresp)
