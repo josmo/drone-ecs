@@ -18,6 +18,7 @@ type Plugin struct {
 	Region         string
 	Family         string
 	Service        string
+	ContainerName  string
 	DockerImage    string
 	Tag            string
 	Cluster        string
@@ -37,6 +38,9 @@ func (p *Plugin) Exec() error {
 		}))
 
 	Image := p.DockerImage + ":" + p.Tag
+	if len(p.ContainerName) == 0 {
+		p.ContainerName = p.Family + "-container"
+	}
 
 	definition := ecs.ContainerDefinition{
 		Command: []*string{},
@@ -54,7 +58,7 @@ func (p *Plugin) Exec() error {
 		Links:        []*string{},
 		Memory:       aws.Int64(p.Memory),
 		MountPoints:  []*ecs.MountPoint{},
-		Name:         aws.String(p.Family + "-container"),
+		Name:         aws.String(p.ContainerName),
 		PortMappings: []*ecs.PortMapping{},
 
 		Ulimits: []*ecs.Ulimit{},

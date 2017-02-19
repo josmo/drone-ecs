@@ -41,6 +41,11 @@ func main() {
 			EnvVar: "PLUGIN_SERVICE",
 		},
 		cli.StringFlag{
+			Name:	"container-name",
+			Usage:  "Container name",
+			EnvVar: "CONTAINER_NAME",
+		},
+		cli.StringFlag{
 			Name:   "docker-image",
 			Usage:  "image to use",
 			EnvVar: "PLUGIN_DOCKER_IMAGE",
@@ -89,6 +94,7 @@ func run(c *cli.Context) error {
 		Region:         c.String("region"),
 		Family:         c.String("family"),
 		Service:        c.String("service"),
+		ContainerName:  c.String("container-name"),
 		DockerImage:    c.String("docker-image"),
 		Tag:            c.String("tag"),
 		Cluster:        c.String("cluster"),
