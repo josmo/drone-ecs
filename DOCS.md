@@ -19,7 +19,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 ```yaml
 deploy:
   ecs:
-    image: plugins/drone-ecs
+    image: peloton/drone-ecs
 
     region: eu-west-1
     access_key: $$ACCESS_KEY_ID

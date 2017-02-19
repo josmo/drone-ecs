@@ -21,7 +21,7 @@ docker run --rm                          \
   -e PLUGIN_DOCKER_IMAGE=<image>         \
   -v $(pwd):$(pwd)                       \
   -w $(pwd)                              \
-  plugins/drone-ecs
+  peloton/drone-ecs
 ```
 
 ## Docker

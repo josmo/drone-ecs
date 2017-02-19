@@ -11,24 +11,23 @@ pipeline:
       - go build -ldflags "-s -w -X main.build=$DRONE_BUILD_NUMBER" -a -tags netgo
 
   publish:
-    coverage:
-      when:
-        branch: master
     docker:
       image: plugins/docker
-      username: ${DOCKER_USERNAME}
-      password: ${DOCKER_PASS}
-      email: ${DOCKER_EMAIL}
-      repo: plugins/drone-ecs
-      tag: latest
+      username: josmo
+      password: ${DOCKER_PASSWORD}
+      repo: peloton/drone-ecs
+      tag:
+        - latest
+        - ${DRONE_BUILD_NUMBER}
       when:
         branch: master
+        event: push
 
 plugin:
   name: ECS
   desc: Deploy or update a project on AWS ECS
   type: deploy
-  image: plugins/drone-ecs
+  image: peloton/drone-ecs
   labels:
     - aws
     - paas
