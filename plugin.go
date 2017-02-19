@@ -30,12 +30,13 @@ type Plugin struct {
 
 func (p *Plugin) Exec() error {
 	fmt.Printf("Drone AWS ECS Plugin built")
+	awsConfig := aws.Config{}
 
-	svc := ecs.New(
-		session.New(&aws.Config{
-			Region:      aws.String(p.Region),
-			Credentials: credentials.NewStaticCredentials(p.Key, p.Secret, ""),
-		}))
+	if len(p.Key) != 0 && len(p.Secret) != 0 {
+		awsConfig.Credentials = credentials.NewStaticCredentials(p.Key, p.Secret, "")
+	}
+	awsConfig.Region = aws.String(p.Region)
+	svc := ecs.New(session.New(&awsConfig))
 
 	Image := p.DockerImage + ":" + p.Tag
 	if len(p.ContainerName) == 0 {
