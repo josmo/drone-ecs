@@ -11,17 +11,16 @@ pipeline:
       - go build -ldflags "-s -w -X main.build=$DRONE_BUILD_NUMBER" -a -tags netgo
 
   publish:
-    docker:
-      image: plugins/docker
-      username: josmo
-      password: ${DOCKER_PASSWORD}
-      repo: peloton/drone-ecs
-      tag:
-        - latest
-        - ${DRONE_BUILD_NUMBER}
-      when:
-        branch: master
-        event: push
+    image: plugins/docker
+    username: josmo
+    password: ${DOCKER_PASSWORD}
+    repo: peloton/drone-ecs
+    tag:
+      - latest
+      - ${DRONE_BUILD_NUMBER}
+    when:
+      branch: master
+      event: push
 
 plugin:
   name: ECS
