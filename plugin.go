@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"fmt"
 	"strconv"
@@ -13,23 +12,28 @@ import (
 )
 
 type Plugin struct {
-	Key            string
-	Secret         string
-	Region         string
-	Family         string
-	Service        string
-	ContainerName  string
-	DockerImage    string
-	Tag            string
-	Cluster        string
-	PortMappings   []string
-	Environment    []string
-	Memory         int64
-	YamlVerified   bool
+	Key                     string
+	Secret                  string
+	Region                  string
+	Family                  string
+	TaskRoleArn             string
+	Service                 string
+	ContainerName           string
+	DockerImage             string
+	Tag                     string
+	Cluster                 string
+	DeploymentConfiguration string
+	PortMappings            []string
+	Environment             []string
+	DesiredCount            int64
+	CPU                     int64
+	Memory                  int64
+	MemoryReservation       int64
+	YamlVerified            bool
 }
 
 func (p *Plugin) Exec() error {
-	fmt.Printf("Drone AWS ECS Plugin built")
+	fmt.Println("Drone AWS ECS Plugin built")
 	awsConfig := aws.Config{}
 
 	if len(p.Key) != 0 && len(p.Secret) != 0 {
@@ -57,7 +61,6 @@ func (p *Plugin) Exec() error {
 
 		Image:        aws.String(Image),
 		Links:        []*string{},
-		Memory:       aws.Int64(p.Memory),
 		MountPoints:  []*ecs.MountPoint{},
 		Name:         aws.String(p.ContainerName),
 		PortMappings: []*ecs.PortMapping{},
@@ -66,6 +69,21 @@ func (p *Plugin) Exec() error {
 		//User: aws.String("String"),
 		VolumesFrom: []*ecs.VolumeFrom{},
 		//WorkingDirectory: aws.String("String"),
+	}
+
+	if p.CPU != 0 {
+		definition.Cpu = aws.Int64(p.CPU)
+	}
+
+	if p.Memory == 0 && p.MemoryReservation == 0 {
+		definition.MemoryReservation = aws.Int64(128)
+	} else {
+		if p.Memory != 0 {
+			definition.Memory = aws.Int64(p.Memory)
+		}
+		if p.MemoryReservation != 0 {
+			definition.MemoryReservation = aws.Int64(p.MemoryReservation)
+		}
 	}
 
 	// Port mappings
@@ -105,8 +123,9 @@ func (p *Plugin) Exec() error {
 		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
 		},
-		Family:  aws.String(p.Family),
-		Volumes: []*ecs.Volume{},
+		Family:      aws.String(p.Family),
+		Volumes:     []*ecs.Volume{},
+		TaskRoleArn: aws.String(p.TaskRoleArn),
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
 
@@ -121,6 +140,29 @@ func (p *Plugin) Exec() error {
 		Service:        aws.String(p.Service),
 		TaskDefinition: aws.String(val),
 	}
+
+	if p.DesiredCount != 0 {
+		sparams.DesiredCount = aws.Int64(p.DesiredCount)
+	}
+
+	cleanedDeploymentConfiguration := strings.Trim(p.DeploymentConfiguration, " ")
+	parts := strings.SplitN(cleanedDeploymentConfiguration, " ", 2)
+	minimumHealthyPercent, minimumHealthyPercentError := strconv.ParseInt(parts[0], 10, 64)
+	if minimumHealthyPercentError != nil {
+		fmt.Println(minimumHealthyPercentError.Error())
+		return minimumHealthyPercentError
+	}
+	maximumPercent, maximumPercentErr := strconv.ParseInt(parts[1], 10, 64)
+	if maximumPercentErr != nil {
+		fmt.Println(maximumPercentErr.Error())
+		return maximumPercentErr
+	}
+
+	sparams.DeploymentConfiguration = &ecs.DeploymentConfiguration{
+		MaximumPercent:        aws.Int64(maximumPercent),
+		MinimumHealthyPercent: aws.Int64(minimumHealthyPercent),
+	}
+
 	sresp, serr := svc.UpdateService(sparams)
 
 	if serr != nil {
