@@ -33,7 +33,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "family",
 			Usage:  "ECS family",
-			EnvVar: "PLUGIN_FAMILY,",
+			EnvVar: "PLUGIN_FAMILY",
+		},
+		cli.StringFlag{
+			Name:   "task-role-arn",
+			Usage:  "ECS task IAM role",
+			EnvVar: "PLUGIN_TASK_ROLE_ARN",
 		},
 		cli.StringFlag{
 			Name:   "service",
@@ -41,9 +46,9 @@ func main() {
 			EnvVar: "PLUGIN_SERVICE",
 		},
 		cli.StringFlag{
-			Name:	"container-name",
+			Name:   "container-name",
 			Usage:  "Container name",
-			EnvVar: "CONTAINER_NAME",
+			EnvVar: "PLUGIN_CONTAINER_NAME",
 		},
 		cli.StringFlag{
 			Name:   "docker-image",
@@ -61,20 +66,40 @@ func main() {
 			EnvVar: "PLUGIN_CLUSTER",
 		},
 		cli.StringSliceFlag{
-			Name:	"port-mappings",
-			Usage:	"ECS port maps",
+			Name:   "port-mappings",
+			Usage:  "ECS port maps",
 			EnvVar: "PLUGIN_PORT_MAPPINGS",
 		},
 		cli.StringSliceFlag{
-			Name:	"environment-variables",
-			Usage:	"ECS environment-variables",
+			Name:   "environment-variables",
+			Usage:  "ECS environment-variables",
 			EnvVar: "PLUGIN_ENVIRONMENT_VARIABLES",
 		},
 		cli.Int64Flag{
+			Name:   "cpu",
+			Usage:  "The number of cpu units to reserve for the container",
+			EnvVar: "PLUGIN_CPU",
+		},
+		cli.Int64Flag{
 			Name:   "memory",
-			Usage:  "Amount of memory to the conatiner defaults to 128",
-			Value:  128,
+			Usage:  "The hard limit (in MiB) of memory to present to the container",
 			EnvVar: "PLUGIN_MEMORY",
+		},
+		cli.Int64Flag{
+			Name:   "memory-reservation",
+			Usage:  "The soft limit (in MiB) of memory to reserve for the container. Defaults to 128",
+			Value:  128,
+			EnvVar: "PLUGIN_MEMORY_RESERVATION",
+		},
+		cli.StringFlag{
+			Name:   "deployment-configuration",
+			Usage:  "Deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks",
+			EnvVar: "PLUGIN_DEPLOYMENT_CONFIGURATION",
+		},
+		cli.Int64Flag{
+			Name:   "desired-count",
+			Usage:  "The number of instantiations of the specified task definition to place and keep running on your cluster",
+			EnvVar: "PLUGIN_DESIRED_COUNT",
 		},
 		cli.BoolTFlag{
 			Name:   "yaml-verified",
@@ -89,19 +114,24 @@ func main() {
 
 func run(c *cli.Context) error {
 	plugin := Plugin{
-		Key:            c.String("access-key"),
-		Secret:         c.String("secret-key"),
-		Region:         c.String("region"),
-		Family:         c.String("family"),
-		Service:        c.String("service"),
-		ContainerName:  c.String("container-name"),
-		DockerImage:    c.String("docker-image"),
-		Tag:            c.String("tag"),
-		Cluster:        c.String("cluster"),
-		PortMappings:   c.StringSlice("port-mappings"),
-		Environment:    c.StringSlice("environment-variables"),
-		Memory:         c.Int64("memory"),
-		YamlVerified:   c.BoolT("yaml-verified"),
+		Key:                     c.String("access-key"),
+		Secret:                  c.String("secret-key"),
+		Region:                  c.String("region"),
+		Family:                  c.String("family"),
+		TaskRoleArn:             c.String("task-role-arn"),
+		Service:                 c.String("service"),
+		ContainerName:           c.String("container-name"),
+		DockerImage:             c.String("docker-image"),
+		Tag:                     c.String("tag"),
+		Cluster:                 c.String("cluster"),
+		PortMappings:            c.StringSlice("port-mappings"),
+		Environment:             c.StringSlice("environment-variables"),
+		CPU:                     c.Int64("cpu"),
+		Memory:                  c.Int64("memory"),
+		MemoryReservation:       c.Int64("memory-reservation"),
+		DeploymentConfiguration: c.String("deployment-configuration"),
+		DesiredCount:            c.Int64("desired-count"),
+		YamlVerified:            c.BoolT("yaml-verified"),
 	}
 	return plugin.Exec()
 }
