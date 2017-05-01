@@ -1,3 +1,4 @@
+[![Build Status](https://drone.seattleslow.com/api/badges/josmo/drone-ecs/status.svg)](https://drone.seattleslow.com/josmo/drone-ecs)
 # drone-ecs
 
 

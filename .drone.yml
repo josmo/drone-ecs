@@ -1,5 +1,6 @@
 workspace:
   base: /go
+  path: src/github.com/josmo/drone-ecs
 pipeline:
   build:
     image: golang:1.6
@@ -14,6 +15,7 @@ pipeline:
     image: plugins/docker
     username: josmo
     password: ${DOCKER_PASSWORD}
+    secrets: [ docker_password ]
     repo: peloton/drone-ecs
     tag:
       - latest
