@@ -30,6 +30,7 @@ type Plugin struct {
 	Memory                  int64
 	MemoryReservation       int64
 	YamlVerified            bool
+	UlimitNofile			int64
 }
 
 func (p *Plugin) Exec() error {
@@ -69,6 +70,11 @@ func (p *Plugin) Exec() error {
 		//User: aws.String("String"),
 		VolumesFrom: []*ecs.VolumeFrom{},
 		//WorkingDirectory: aws.String("String"),
+	}
+
+	// Ulimit Nofile addition
+	if p.UlimitNofile != nil {
+		definition.Ulimits = { "Name": "nofile", "Soft": p.UlimitNofile, "Hard": p.UlimitNofile }
 	}
 
 	if p.CPU != 0 {
