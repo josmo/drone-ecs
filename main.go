@@ -106,6 +106,11 @@ func main() {
 			Usage:  "Ensure the yaml was signed",
 			EnvVar: "DRONE_YAML_VERIFIED",
 		},
+        cli.Int64Flag{
+			Name: 	"ulimit-nofile",
+			Usage: 	"Open files to set on container",
+			EnvVar: "PLUGIN_ULIMIT_NOFILE",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -132,6 +137,7 @@ func run(c *cli.Context) error {
 		DeploymentConfiguration: c.String("deployment-configuration"),
 		DesiredCount:            c.Int64("desired-count"),
 		YamlVerified:            c.BoolT("yaml-verified"),
+		UlimitNofile:			 c.Int64("ulimit-nofile"),
 	}
 	return plugin.Exec()
 }
