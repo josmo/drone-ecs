@@ -37,7 +37,6 @@ type Plugin struct {
 
 func (p *Plugin) Exec() error {
     fmt.Println("Drone AWS ECS Plugin built")
-    fmt.Println("pirates")
     awsConfig := aws.Config{}
 
     if len(p.Key) != 0 && len(p.Secret) != 0 {
@@ -173,7 +172,6 @@ func (p *Plugin) Exec() error {
     }
 
     // DeploymentConfiguration
-    fmt.Println("starting DeploymentConfiguration")
     cleanedDeploymentConfiguration := strings.Trim(p.DeploymentConfiguration, " ")
     parts := strings.SplitN(cleanedDeploymentConfiguration, " ", 2)
     if len(parts) > 1 {
