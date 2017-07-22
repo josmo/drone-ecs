@@ -144,7 +144,7 @@ func (p *Plugin) Exec() error {
             }
         }
     }
-
+    fmt.Println("family is", p.Family)
     params := &ecs.RegisterTaskDefinitionInput{
         ContainerDefinitions: []*ecs.ContainerDefinition{
             &definition,
@@ -155,11 +155,13 @@ func (p *Plugin) Exec() error {
     }
     resp, err := svc.RegisterTaskDefinition(params)
 
-    if err != nil {
+    if err != nil { 
+        fmt.Println("getting to error")
         fmt.Println(err.Error())
         return err
     }
 
+    fmt.("going to update service input")
     val := *(resp.TaskDefinition.TaskDefinitionArn)
     sparams := &ecs.UpdateServiceInput{
         Cluster:        aws.String(p.Cluster),
