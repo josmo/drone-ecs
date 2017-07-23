@@ -17,6 +17,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `port_mappings` - Port mappings from host to container, format is `hostPort containerPort`, protocol is automatically set to TransportProtocol
 * `docker_labels` - A key/value map of labels to add to the container
 * `environment-variables` - List of Environment Variables to be passed to the container, format is `NAME=VALUE`
+* `secret_environment_variables` - List of Environment Variables to be injected into the container from drone secrets. You can use the name of the secret itself or set a custom name to be used within the container. Syntax is `NAME` (must match the name of one of your secrets) or `CUSTOM_NAME=NAME`
 * `cpu`, The number of cpu units to reserve for the container
 * `memory`, The hard limit (in MiB) of memory to present to the container
 * `memory_reservation`, The soft limit (in MiB) of memory to reserve for the container. Defaults to 128
@@ -46,7 +47,10 @@ deploy:
     port_mappings:
       - 80 9000
     environment_variables:
-      - DATABASE_URI=${MY_DATABASE_URI}
+      - NODE_ENV=production
+    secret_environment_variables:
+      - MY_SECRET=MY_SANDBOX_SECRET
+      - MY_ACCESS_KEY
     docker_labels:
       - traefik.frontend.rule=Host:my.host.gov
       - traefik.backend=pirates
@@ -55,4 +59,6 @@ deploy:
     cpu: 1024
     desired_count: 1
     deployment_configuration: 50 200
+    secrets:
+
 ```
