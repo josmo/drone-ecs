@@ -65,15 +65,35 @@ func main() {
 			Usage:  "AWS ECS cluster",
 			EnvVar: "PLUGIN_CLUSTER",
 		},
+		cli.StringFlag{
+			Name:   "log-driver",
+			Usage:  "The log driver to use for the container",
+			EnvVar: "PLUGIN_LOG_DRIVER",
+		},
+		cli.StringSliceFlag{
+			Name:   "log-options",
+			Usage:  "The configuration options to send to the log driver",
+			EnvVar: "PLUGIN_LOG_OPTIONS",
+		},
 		cli.StringSliceFlag{
 			Name:   "port-mappings",
 			Usage:  "ECS port maps",
 			EnvVar: "PLUGIN_PORT_MAPPINGS",
 		},
 		cli.StringSliceFlag{
+			Name:   "docker-labels",
+			Usage:  "A key/value map of labels to add to the container",
+			EnvVar: "PLUGIN_DOCKER_LABELS",
+		},
+		cli.StringSliceFlag{
 			Name:   "environment-variables",
 			Usage:  "ECS environment-variables",
 			EnvVar: "PLUGIN_ENVIRONMENT_VARIABLES",
+		},
+		cli.StringSliceFlag{
+			Name:   "secret-environment-variables",
+			Usage:  "Secret ECS environment-variables",
+			EnvVar: "PLUGIN_SECRET_ENVIRONMENT_VARIABLES",
 		},
 		cli.Int64Flag{
 			Name:   "cpu",
@@ -124,8 +144,12 @@ func run(c *cli.Context) error {
 		DockerImage:             c.String("docker-image"),
 		Tag:                     c.String("tag"),
 		Cluster:                 c.String("cluster"),
+		LogDriver:               c.String("log-driver"),
 		PortMappings:            c.StringSlice("port-mappings"),
 		Environment:             c.StringSlice("environment-variables"),
+		SecretEnvironment:       c.StringSlice("secret-environment-variables"),
+		DockerLabels:            c.StringSlice("docker-labels"),
+		LogOptions:              c.StringSlice("log-options"),
 		CPU:                     c.Int64("cpu"),
 		Memory:                  c.Int64("memory"),
 		MemoryReservation:       c.Int64("memory-reservation"),
