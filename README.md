@@ -1,4 +1,4 @@
-[![Build Status](https://buildandyet.com/api/badges/andyet/drone-ecs/status.svg)](https://build.andyet.com/andyet/drone-ecs)
+[![Build Status](https://build.andyet.com/api/badges/andyet/drone-ecs/status.svg)](https://build.andyet.com/andyet/drone-ecs)
 # drone-ecs
 
 Drone plugin to deploy or update a project on AWS ECS. For the usage information and a listing of the available options please take a look at [the docs](DOCS.md).
