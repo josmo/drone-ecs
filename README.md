@@ -21,5 +21,5 @@ docker run --rm                             \
   -e PLUGIN_DOCKER_IMAGE=<image>            \
   -v $(pwd):$(pwd)                          \
   -w $(pwd)                                 \
-  andyet/drone-ecs
+  < your-image >/drone-ecs
 ```
