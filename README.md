@@ -1,4 +1,9 @@
 [![Build Status](https://drone.seattleslow.com/api/badges/josmo/drone-ecs/status.svg)](https://drone.seattleslow.com/josmo/drone-ecs)
+[![Join the chat at https://gitter.im/drone/drone](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/drone/drone)
+[![Go Doc](https://godoc.org/github.com/josmo/drone-ecs?status.svg)](http://godoc.org/github.com/josmo/drone-ecs)
+[![Go Report](https://goreportcard.com/badge/github.com/josmo/drone-ecs)](https://goreportcard.com/report/github.com/josmo/drone-ecs)
+[![](https://images.microbadger.com/badges/image/peloton/drone-ecs.svg)](https://microbadger.com/images/peloton/drone-ecs "Get your own image badge on microbadger.com")
+
 # drone-ecs
 
 
@@ -6,10 +11,10 @@ Drone plugin to deploy or update a project on AWS ECS. For the usage information
 
 ## Binary
 
-Build the binary using `make`:
+Build the binary using `drone cli`:
 
 ```
-make deps build
+drone exec
 ```
 
 ### Example
@@ -24,13 +29,3 @@ docker run --rm                          \
   -w $(pwd)                              \
   peloton/drone-ecs
 ```
-
-## Docker
-
-Build the container using `make`:
-
-```
-make deps docker
-```
-
-### Example

@@ -4,16 +4,17 @@ import (
 	"github.com/codegangsta/cli"
 	"log"
 	"os"
+	"fmt"
 )
 
-var version string
+var build string
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "rancher publish"
 	app.Usage = "rancher publish"
 	app.Action = run
-	app.Version = version
+	app.Version = fmt.Sprintf("1.0.0+%s", build)
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "access-key",
