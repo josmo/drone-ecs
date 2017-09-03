@@ -1,7 +1,5 @@
 FROM microsoft/nanoserver:latest
 
-ENV GODEBUG=netdns=go
-
 LABEL org.label-schema.version=latest
 LABEL org.label-schema.vcs-url="https://github.com/josmo/drone-ecs.git"
 LABEL org.label-schema.name="Drone ECS"

@@ -4,12 +4,14 @@ workspace:
 pipeline:
   test:
     image: golang:1.9
+    pull: true
     commands:
       - go vet
       - go test -cover -coverprofile=coverage.out
 
   build_linux_amd64:
     image: golang:1.9
+    pull: true
     group: build
     environment:
       - GOOS=linux
@@ -20,6 +22,7 @@ pipeline:
 
   build_linux_arm64:
     image: golang:1.9
+    pull: true
     group: build
     environment:
       - GOOS=linux
@@ -30,6 +33,7 @@ pipeline:
 
   build_linux_arm:
     image: golang:1.9
+    pull: true
     group: build
     environment:
       - GOOS=linux
@@ -50,7 +54,8 @@ pipeline:
   #     - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/windows/amd64/drone-ecs
 
   publish_linux_amd64:
-    image: plugins/docker
+    image: plugins/docker:17.05
+    pull: true
     username: josmo
     repo: peloton/drone-ecs
     tags: [ latest, 1.0.0, 1.0, 1 ]
@@ -61,7 +66,8 @@ pipeline:
       event: push
 
   publish_linux_arm64:
-    image: plugins/docker
+    image: plugins/docker:17.05
+    pull: true
     username: josmo
     repo: peloton/drone-ecs
     tags: [ linux-arm64 ]
@@ -72,7 +78,8 @@ pipeline:
       event: push
 
   publish_linux_arm:
-    image: plugins/docker
+    image: plugins/docker:17.05
+    pull: true
     username: josmo
     repo: peloton/drone-ecs
     tags: [ linux-arm ]
