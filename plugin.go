@@ -27,6 +27,7 @@ type Plugin struct {
 	DeploymentConfiguration string
 	PortMappings            []string
 	Environment             []string
+	Labels                  []string
 	DesiredCount            int64
 	CPU                     int64
 	Memory                  int64
@@ -120,6 +121,12 @@ func (p *Plugin) Exec() error {
 			Value: aws.String(strings.Trim(parts[1], " ")),
 		}
 		definition.Environment = append(definition.Environment, &pair)
+	}
+
+	// DockerLabels
+	for _, label := range p.Labels {
+		parts := strings.SplitN(label, "=", 2)
+		definition.DockerLabels[strings.Trim(parts[0], " ")] = aws.String(strings.Trim(parts[1], " "))
 	}
 
 	// LogOptions

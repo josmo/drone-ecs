@@ -21,6 +21,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster
 * `log_driver` - The log driver to use for the container
 * `log_options` - The configuration options to send to the log driver
+* `labels` - A key/value map of labels to add to the container
 
 
 ## Example
@@ -42,6 +43,9 @@ deploy:
       - awslogs-region=us-east-1
     environment_variables:
       - DATABASE_URI=$$MY_DATABASE_URI
+    docker_labels:
+      - traefik.frontend.rule=Host:my.host.gov
+      - traefik.backend=pirates
     port_mappings:
       - 80 9000
     memoryReservation: 128
