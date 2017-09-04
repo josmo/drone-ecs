@@ -22,6 +22,8 @@ type Plugin struct {
 	DockerImage             string
 	Tag                     string
 	Cluster                 string
+	LogDriver               string
+    LogOptions              []string
 	DeploymentConfiguration string
 	PortMappings            []string
 	Environment             []string
@@ -119,6 +121,23 @@ func (p *Plugin) Exec() error {
 		}
 		definition.Environment = append(definition.Environment, &pair)
 	}
+
+	// LogOptions
+	if len(p.LogDriver) > 0 {
+		definition.LogConfiguration = new(ecs.LogConfiguration)
+		definition.LogConfiguration.LogDriver = &p.LogDriver
+		if len(p.LogOptions) > 0 {
+			definition.LogConfiguration.Options = make(map[string]*string)
+			for _, logOption := range p.LogOptions {
+				parts := strings.SplitN(logOption, "=", 2)
+				logOptionKey := strings.Trim(parts[0], " ")
+				logOptionValue := aws.String(strings.Trim(parts[1], " "))
+				definition.LogConfiguration.Options[logOptionKey] = logOptionValue
+				}
+			}
+		}
+
+
 	params := &ecs.RegisterTaskDefinitionInput{
 		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
@@ -130,7 +149,6 @@ func (p *Plugin) Exec() error {
 	resp, err := svc.RegisterTaskDefinition(params)
 
 	if err != nil {
-		fmt.Println(err.Error())
 		return err
 	}
 
@@ -166,12 +184,10 @@ func (p *Plugin) Exec() error {
 	sresp, serr := svc.UpdateService(sparams)
 
 	if serr != nil {
-		fmt.Println(serr.Error())
 		return serr
 	}
 
 	fmt.Println(sresp)
-
 	fmt.Println(resp)
 	return nil
 

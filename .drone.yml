@@ -58,7 +58,7 @@ pipeline:
     pull: true
     username: josmo
     repo: peloton/drone-ecs
-    tags: [ latest, 1.0.0, 1.0, 1 ]
+    tags: [ latest, 1.0.1, 1.0, 1 ]
     secrets: [ docker_password ]
     dockerfile: Dockerfile
     when:

@@ -19,6 +19,9 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `environment_variables` - List of Environment Variables to be passed to the container, format is `NAME=VALUE`
 * `deployment_configuration` - Deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks, format is `minimumHealthyPercent maximumPercent`
 * `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster
+* `log_driver` - The log driver to use for the container
+* `log_options` - The configuration options to send to the log driver
+
 
 ## Example
 
@@ -28,13 +31,15 @@ deploy:
     image: peloton/drone-ecs
 
     region: eu-west-1
-    access_key: $$ACCESS_KEY_ID
-    secret_key: $$SECRET_ACCESS_KEY
     family: my-ecs-task
     docker_image: namespace/repo
     tag: latest
     service: my-ecs-service
     task_role_arn: arn:aws:iam::012345678901:role/rolename
+    log_driver: awslogs
+    log_options:
+      - awslogs-group=my-ecs-group
+      - awslogs-region=us-east-1
     environment_variables:
       - DATABASE_URI=$$MY_DATABASE_URI
     port_mappings:
@@ -43,4 +48,5 @@ deploy:
     cpu: 1024
     desired_count: 1
     deployment_configuration: 50 200
+    secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
 ```
