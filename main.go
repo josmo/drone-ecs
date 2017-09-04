@@ -82,6 +82,11 @@ func main() {
 			EnvVar: "PLUGIN_PORT_MAPPINGS",
 		},
 		cli.StringSliceFlag{
+			Name:   "labels",
+			Usage:  "A key/value map of labels to add to the container",
+			EnvVar: "PLUGIN_LABELS",
+		},
+		cli.StringSliceFlag{
 			Name:   "environment-variables",
 			Usage:  "ECS environment-variables",
 			EnvVar: "PLUGIN_ENVIRONMENT_VARIABLES",
@@ -139,6 +144,7 @@ func run(c *cli.Context) error {
 		LogOptions:              c.StringSlice("log-options"),
 		PortMappings:            c.StringSlice("port-mappings"),
 		Environment:             c.StringSlice("environment-variables"),
+		Labels:                  c.StringSlice("labels"),
 		CPU:                     c.Int64("cpu"),
 		Memory:                  c.Int64("memory"),
 		MemoryReservation:       c.Int64("memory-reservation"),
