@@ -23,7 +23,7 @@ type Plugin struct {
 	Tag                     string
 	Cluster                 string
 	LogDriver               string
-    LogOptions              []string
+	LogOptions              []string
 	DeploymentConfiguration string
 	PortMappings            []string
 	Environment             []string
@@ -133,10 +133,9 @@ func (p *Plugin) Exec() error {
 				logOptionKey := strings.Trim(parts[0], " ")
 				logOptionValue := aws.String(strings.Trim(parts[1], " "))
 				definition.LogConfiguration.Options[logOptionKey] = logOptionValue
-				}
 			}
 		}
-
+	}
 
 	params := &ecs.RegisterTaskDefinitionInput{
 		ContainerDefinitions: []*ecs.ContainerDefinition{

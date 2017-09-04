@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
-	"os"
 	"fmt"
 	"github.com/urfave/cli"
+	"log"
+	"os"
 )
 
 var build string
