@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecs"
+	"os"
 )
 
 type Plugin struct {
@@ -27,6 +28,7 @@ type Plugin struct {
 	DeploymentConfiguration string
 	PortMappings            []string
 	Environment             []string
+	SecretEnvironment       []string
 	Labels                  []string
 	DesiredCount            int64
 	CPU                     int64
@@ -119,6 +121,24 @@ func (p *Plugin) Exec() error {
 		pair := ecs.KeyValuePair{
 			Name:  aws.String(strings.Trim(parts[0], " ")),
 			Value: aws.String(strings.Trim(parts[1], " ")),
+		}
+		definition.Environment = append(definition.Environment, &pair)
+	}
+
+	// Secret Environment variables
+	for _, envVar := range p.SecretEnvironment {
+		parts := strings.SplitN(envVar, "=", 2)
+		pair := ecs.KeyValuePair{};
+		if (len(parts) == 2) {
+			// set to custom named variable
+			pair.SetName(aws.StringValue(aws.String(strings.Trim(parts[0], " "))));
+			pair.SetValue(aws.StringValue(aws.String(os.Getenv(strings.Trim(parts[1], " ")))));
+		} else if (len(parts) == 1) {
+			// default to named var
+			pair.SetName(aws.StringValue(aws.String(parts[0])));
+			pair.SetValue(aws.StringValue(aws.String(os.Getenv(parts[0]))));
+		} else {
+			fmt.Println("invalid syntax in secret enironment var", envVar);
 		}
 		definition.Environment = append(definition.Environment, &pair)
 	}
