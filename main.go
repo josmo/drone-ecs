@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
+	"fmt"
+	"github.com/urfave/cli"
 	"log"
 	"os"
-	"fmt"
 )
 
 var build string
@@ -19,12 +19,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "access-key",
 			Usage:  "AWS access key",
-			EnvVar: "PLUGIN_ACCESS_KEY, ECS_ACCESS_KEY",
+			EnvVar: "PLUGIN_ACCESS_KEY,ECS_ACCESS_KEY,AWS_ACCESS_KEY",
 		},
 		cli.StringFlag{
 			Name:   "secret-key",
 			Usage:  "AWS secret key",
-			EnvVar: "PLUGIN_SECRET_KEY, ECS_SECRET_KEY",
+			EnvVar: "PLUGIN_SECRET_KEY,ECS_SECRET_KEY,AWS_SECRET_KEY",
 		},
 		cli.StringFlag{
 			Name:   "region",
@@ -65,6 +65,16 @@ func main() {
 			Name:   "cluster",
 			Usage:  "AWS ECS cluster",
 			EnvVar: "PLUGIN_CLUSTER",
+		},
+		cli.StringFlag{
+			Name:   "log-driver",
+			Usage:  "The log driver to use for the container",
+			EnvVar: "PLUGIN_LOG_DRIVER",
+		},
+		cli.StringSliceFlag{
+			Name:   "log-options",
+			Usage:  "The configuration options to send to the log driver",
+			EnvVar: "PLUGIN_LOG_OPTIONS",
 		},
 		cli.StringSliceFlag{
 			Name:   "port-mappings",
@@ -125,6 +135,8 @@ func run(c *cli.Context) error {
 		DockerImage:             c.String("docker-image"),
 		Tag:                     c.String("tag"),
 		Cluster:                 c.String("cluster"),
+		LogDriver:               c.String("log-driver"),
+		LogOptions:              c.StringSlice("log-options"),
 		PortMappings:            c.StringSlice("port-mappings"),
 		Environment:             c.StringSlice("environment-variables"),
 		CPU:                     c.Int64("cpu"),
