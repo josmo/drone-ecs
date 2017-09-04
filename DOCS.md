@@ -22,6 +22,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `log_driver` - The log driver to use for the container
 * `log_options` - The configuration options to send to the log driver
 * `labels` - A key/value map of labels to add to the container
+* `secret_environment_variables` - List of Environment Variables to be injected into the container from drone secrets. You can use the name of the secret itself or set a custom name to be used within the container. Syntax is `NAME` (must match the name of one of your secrets) or `CUSTOM_NAME=NAME`
 
 
 ## Example
@@ -43,7 +44,10 @@ deploy:
       - awslogs-region=us-east-1
     environment_variables:
       - DATABASE_URI=$$MY_DATABASE_URI
-    docker_labels:
+    secret_environment_variables:
+      - MY_SECRET=MY_SANDBOX_SECRET
+      - MY_ACCESS_KEY
+    labels:
       - traefik.frontend.rule=Host:my.host.gov
       - traefik.backend=pirates
     port_mappings:
