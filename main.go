@@ -115,7 +115,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "network-mode",
 			Usage:  "The Docker networking mode to use for the containers in the task. Defaults to bridge if unspecified",
-			EnvVar: "PLUGIN_NETWORK_MODE",
+			EnvVar: "PLUGIN_TASK_NETWORK_MODE",
 		},
 		cli.StringFlag{
 			Name:   "deployment-configuration",
@@ -159,6 +159,7 @@ func run(c *cli.Context) error {
 		CPU:                     c.Int64("cpu"),
 		Memory:                  c.Int64("memory"),
 		MemoryReservation:       c.Int64("memory-reservation"),
+		NetworkMode:             c.String("network-mode"),
 		DeploymentConfiguration: c.String("deployment-configuration"),
 		DesiredCount:            c.Int64("desired-count"),
 		YamlVerified:            c.BoolT("yaml-verified"),
