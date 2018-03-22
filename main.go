@@ -113,6 +113,11 @@ func main() {
 			EnvVar: "PLUGIN_MEMORY_RESERVATION",
 		},
 		cli.StringFlag{
+			Name:   "network-mode",
+			Usage:  "The Docker networking mode to use for the containers in the task. Defaults to bridge if unspecified",
+			EnvVar: "PLUGIN_NETWORK_MODE",
+		},
+		cli.StringFlag{
 			Name:   "deployment-configuration",
 			Usage:  "Deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks",
 			EnvVar: "PLUGIN_DEPLOYMENT_CONFIGURATION",
