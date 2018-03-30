@@ -34,6 +34,7 @@ type Plugin struct {
 	CPU                     int64
 	Memory                  int64
 	MemoryReservation       int64
+	NetworkMode             string
 	YamlVerified            bool
 }
 
@@ -128,17 +129,17 @@ func (p *Plugin) Exec() error {
 	// Secret Environment variables
 	for _, envVar := range p.SecretEnvironment {
 		parts := strings.SplitN(envVar, "=", 2)
-		pair := ecs.KeyValuePair{};
-		if (len(parts) == 2) {
+		pair := ecs.KeyValuePair{}
+		if len(parts) == 2 {
 			// set to custom named variable
-			pair.SetName(aws.StringValue(aws.String(strings.Trim(parts[0], " "))));
-			pair.SetValue(aws.StringValue(aws.String(os.Getenv(strings.Trim(parts[1], " ")))));
-		} else if (len(parts) == 1) {
+			pair.SetName(aws.StringValue(aws.String(strings.Trim(parts[0], " "))))
+			pair.SetValue(aws.StringValue(aws.String(os.Getenv(strings.Trim(parts[1], " ")))))
+		} else if len(parts) == 1 {
 			// default to named var
-			pair.SetName(aws.StringValue(aws.String(parts[0])));
-			pair.SetValue(aws.StringValue(aws.String(os.Getenv(parts[0]))));
+			pair.SetName(aws.StringValue(aws.String(parts[0])))
+			pair.SetValue(aws.StringValue(aws.String(os.Getenv(parts[0]))))
 		} else {
-			fmt.Println("invalid syntax in secret enironment var", envVar);
+			fmt.Println("invalid syntax in secret enironment var", envVar)
 		}
 		definition.Environment = append(definition.Environment, &pair)
 	}
@@ -164,6 +165,10 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
+	if len(p.NetworkMode) == 0 {
+		p.NetworkMode = "bridge"
+	}
+
 	params := &ecs.RegisterTaskDefinitionInput{
 		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
@@ -171,6 +176,7 @@ func (p *Plugin) Exec() error {
 		Family:      aws.String(p.Family),
 		Volumes:     []*ecs.Volume{},
 		TaskRoleArn: aws.String(p.TaskRoleArn),
+		NetworkMode: aws.String(p.NetworkMode),
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
 
