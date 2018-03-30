@@ -1,7 +1,6 @@
 <!-- PLEASE READ BEFORE DELETING
 
-Please discuss changes before creating pull requests.
+Please discuss changes in issues before creating a PR.
 
-    https://gitter.im/drone/drone
 
 -->
