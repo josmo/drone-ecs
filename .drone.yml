@@ -54,40 +54,36 @@ pipeline:
   #     - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/windows/amd64/drone-ecs
 
   publish_linux_amd64:
-    image: plugins/docker:17.05
-    pull: true
+    image: plugins/docker 
     username: josmo
     repo: peloton/drone-ecs
-    tags: [ latest, 1.0.3, 1.0, 1 ]
+    auto_tag: true
     secrets: [ docker_password ]
     dockerfile: Dockerfile
     when:
-      branch: master
-      event: push
+      event: [ tag ]
 
   publish_linux_arm64:
-    image: plugins/docker:17.05
-    pull: true
+    image: plugins/docker
     username: josmo
     repo: peloton/drone-ecs
-    tags: [ linux-arm64 ]
+    auto_tag: true
+    auto_tag_suffix: linux-arm64
     secrets: [ docker_password ]
     dockerfile: Dockerfile.arm64
     when:
-      branch: master
-      event: push
+      event: [ tag ]
 
   publish_linux_arm:
-    image: plugins/docker:17.05
-    pull: true
+    image: plugins/docker
     username: josmo
     repo: peloton/drone-ecs
-    tags: [ linux-arm ]
+    auto_tag: true
+    auto_tag_suffix: linux-arm
     secrets: [ docker_password ]
     dockerfile: Dockerfile.arm
     when:
-      branch: master
-      event: push
+      event: [ tag ]
 
   # publish_windows_amd64:
   #   image: plugins/docker
