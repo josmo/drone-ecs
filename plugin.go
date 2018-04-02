@@ -191,7 +191,7 @@ func (p *Plugin) Exec() error {
 		TaskDefinition: aws.String(val),
 	}
 
-	if p.DesiredCount != 0 {
+	if p.DesiredCount >= 0 {
 		sparams.DesiredCount = aws.Int64(p.DesiredCount)
 	}
 
