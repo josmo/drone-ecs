@@ -2,15 +2,22 @@ workspace:
   base: /go
   path: src/github.com/josmo/drone-ecs
 pipeline:
+  deps:
+    image: golang:1.10
+    pull: true
+    commands:
+      - go get -u github.com/golang/dep/cmd/dep
+      - dep ensure
+
   test:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     commands:
       - go vet
       - go test -cover -coverprofile=coverage.out
 
   build_linux_amd64:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -21,7 +28,7 @@ pipeline:
       - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/amd64/drone-ecs
 
   build_linux_arm64:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -32,7 +39,7 @@ pipeline:
       - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm64/drone-ecs
 
   build_linux_arm:
-    image: golang:1.9
+    image: golang:1.10
     pull: true
     group: build
     environment:
@@ -42,16 +49,6 @@ pipeline:
       - GOARM=7
     commands:
       - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/linux/arm/drone-ecs
-
-  # build_windows_amd64:
-  #   image: golang:1.9-nanoserver
-  #   group: build
-  #   environment:
-  #     - GOOS=windows
-  #     - GOARCH=amd64
-  #     - CGO_ENABLED=0
-  #   commands:
-  #     - go build -v -ldflags "-X main.build=${DRONE_BUILD_NUMBER}" -a -o release/windows/amd64/drone-ecs
 
   publish_linux_amd64:
     image: plugins/docker 
@@ -85,13 +82,3 @@ pipeline:
     when:
       event: [ tag, push ]
 
-  # publish_windows_amd64:
-  #   image: plugins/docker
-  #   username: josmo
-  #   repo: peloton/drone-rancher
-  #   tags: [ windows-amd64 ]
-  #   secrets: [ docker_password ]
-  #   dockerfile: Dockerfile.windows
-  #   when:
-  #     branch: master
-  #     event: push

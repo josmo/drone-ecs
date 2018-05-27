@@ -25,5 +25,8 @@ _testmain.go
 
 .idea
 
+vendor/
+release/
+
 coverage.out
 drone-ecs
