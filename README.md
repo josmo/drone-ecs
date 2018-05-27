@@ -1,4 +1,4 @@
-[![Build Status](https://drone.seattleslow.com/api/badges/josmo/drone-ecs/status.svg)](https://drone.seattleslow.com/josmo/drone-ecs)
+[![Build Status](https://drone.pelo.tech/api/badges/josmo/drone-ecs/status.svg)](https://drone.pelo.tech/josmo/drone-ecs)
 [![Join the chat at https://gitter.im/drone/drone](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/drone/drone)
 [![Go Doc](https://godoc.org/github.com/josmo/drone-ecs?status.svg)](http://godoc.org/github.com/josmo/drone-ecs)
 [![Go Report](https://goreportcard.com/badge/github.com/josmo/drone-ecs)](https://goreportcard.com/report/github.com/josmo/drone-ecs)
