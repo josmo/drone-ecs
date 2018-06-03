@@ -36,6 +36,10 @@ type Plugin struct {
 	MemoryReservation       int64
 	NetworkMode             string
 	YamlVerified            bool
+	TaskCPU                 string
+	TaskMemory              string
+	TaskExecutionRoleArn    string
+	Compatibilities         string
 }
 
 func (p *Plugin) Exec() error {
@@ -173,10 +177,29 @@ func (p *Plugin) Exec() error {
 		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
 		},
-		Family:      aws.String(p.Family),
-		Volumes:     []*ecs.Volume{},
-		TaskRoleArn: aws.String(p.TaskRoleArn),
-		NetworkMode: aws.String(p.NetworkMode),
+		Family:                  aws.String(p.Family),
+		Volumes:                 []*ecs.Volume{},
+		TaskRoleArn:             aws.String(p.TaskRoleArn),
+		NetworkMode:             aws.String(p.NetworkMode),
+	}
+
+	cleanedCompatibilities := strings.Trim(p.Compatibilities, " ")
+	compatibilitySlice := strings.Split(cleanedCompatibilities, " ")
+
+	if cleanedCompatibilities != "" && len(compatibilitySlice) != 0 {
+		params.RequiresCompatibilities = aws.StringSlice(compatibilitySlice)
+	}
+
+	if len(p.TaskCPU) != 0 {
+		params.Cpu = aws.String(p.TaskCPU)
+	}
+
+	if len(p.TaskMemory) != 0 {
+		params.Memory = aws.String(p.TaskMemory)
+	}
+
+	if len(p.TaskExecutionRoleArn) != 0 {
+		params.ExecutionRoleArn = aws.String(p.TaskExecutionRoleArn)
 	}
 	resp, err := svc.RegisterTaskDefinition(params)
 

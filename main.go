@@ -132,6 +132,26 @@ func main() {
 			Usage:  "Ensure the yaml was signed",
 			EnvVar: "DRONE_YAML_VERIFIED",
 		},
+		cli.StringFlag{
+			Name:   "task-cpu",
+			Usage:  "The number of CPU units used by the task. It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu",
+			EnvVar: "PLUGIN_TASK_CPU",
+		},
+		cli.StringFlag{
+			Name:   "task-memory",
+			Usage:  "The amount of memory (in MiB) used by the task.It can be expressed as an integer using MiB, for example 1024, or as a string using GB. Required if using Fargate launch type",
+			EnvVar: "PLUGIN_TASK_MEMORY",
+		},
+		cli.StringFlag{
+			Name:   "task-execution-role-arn",
+			Usage:  "The Amazon Resource Name (ARN) of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.",
+			EnvVar: "PLUGIN_TASK_EXECUTION_ROLE_ARN",
+		},
+		cli.StringFlag{
+			Name:   "compatibilities",
+			Usage:  "List of launch types supported by the task",
+			EnvVar: "PLUGIN_COMPATIBILITIES",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -163,6 +183,10 @@ func run(c *cli.Context) error {
 		DeploymentConfiguration: c.String("deployment-configuration"),
 		DesiredCount:            c.Int64("desired-count"),
 		YamlVerified:            c.BoolT("yaml-verified"),
+		TaskCPU:                 c.String("task-cpu"),
+		TaskMemory:              c.String("task-memory"),
+		TaskExecutionRoleArn:    c.String("task-execution-role-arn"),
+		Compatibilities:         c.String("compatibilities"),
 	}
 	return plugin.Exec()
 }
