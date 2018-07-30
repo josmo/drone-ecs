@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	"github.com/urfave/cli"
 )
 
 var build string
@@ -152,6 +153,35 @@ func main() {
 			Usage:  "List of launch types supported by the task",
 			EnvVar: "PLUGIN_COMPATIBILITIES",
 		},
+		cli.StringFlag{
+			Name:   "healthcheck-command",
+			Usage:  "List representing the command that the container runs to determine if it is healthy. Must start with CMD to execute the command arguments directly, or CMD-SHELL to run the command with the container's default shell",
+			EnvVar: "PLUGIN_HEALTHCHECK_COMMAND",
+		},
+		cli.Int64Flag{
+			Name:   "healthcheck-interval",
+			Usage:  "The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. Defaults to 30 seconds",
+			Value:  30,
+			EnvVar: "PLUGIN_HEALTHCHECK_INTERVAL",
+		},
+		cli.Int64Flag{
+			Name:   "healthcheck-retries",
+			Usage:  "The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. Defaults to 3",
+			Value:  3,
+			EnvVar: "PLUGIN_HEALTHCHECK_RETRIES",
+		},
+		cli.Int64Flag{
+			Name:   "healthcheck-start-period",
+			Usage:  "The grace period within which to provide containers time to bootstrap before failed health checks count towards the maximum number of retries. You may specify between 0 and 300 seconds. The startPeriod is disabled by default",
+			Value:  0,
+			EnvVar: "PLUGIN_HEALTHCHECK_START_PERIOD",
+		},
+		cli.Int64Flag{
+			Name:   "healthcheck-timeout",
+			Usage:  "The time period in seconds to wait for a health check to succeed before it is considered a failure. You may specify between 2 and 60 seconds. Defaults to 5 seconds",
+			Value:  5,
+			EnvVar: "PLUGIN_HEALTHCHECK_TIMEOUT",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -187,6 +217,11 @@ func run(c *cli.Context) error {
 		TaskMemory:              c.String("task-memory"),
 		TaskExecutionRoleArn:    c.String("task-execution-role-arn"),
 		Compatibilities:         c.String("compatibilities"),
+		HealthCheckCommand:      c.StringSlice("healthcheck-command"),
+		HealthCheckInterval:     c.Int64("healthcheck-interval"),
+		HealthCheckRetries:      c.Int64("healthcheck-retries"),
+		HealthCheckStartPeriod:  c.Int64("healthcheck-start-period"),
+		HealthCheckTimeout:      c.Int64("healthcheck-timeout"),
 	}
 	return plugin.Exec()
 }

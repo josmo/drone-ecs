@@ -2,6 +2,7 @@
 
 
 [[projects]]
+  digest = "1:dfc383b6e598769e516afb07a221ca50314f902e95e739509377937442fd7f65"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -31,31 +32,44 @@
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
     "service/ecs",
-    "service/sts"
+    "service/sts",
   ]
+  pruneopts = "UT"
   revision = "854f9d07a932452f1552955e127e50ba5ebb25cc"
   version = "v1.13.56"
 
 [[projects]]
+  digest = "1:fb46255681497314debedde38b64be32a75bae50bad107586c22f1662bf2d352"
   name = "github.com/go-ini/ini"
   packages = ["."]
+  pruneopts = "UT"
   revision = "06f5f3d67269ccec1fe5fe4134ba6e982984f7f5"
   version = "v1.37.0"
 
 [[projects]]
+  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0b12d6b5"
 
 [[projects]]
+  digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "github.com/urfave/cli"
   packages = ["."]
+  pruneopts = "UT"
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
   version = "v1.20.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "06b4651947a9d7252adbc914c15552b499cd70335edbe01282356b1bbd71ca9d"
+  input-imports = [
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/credentials",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/ecs",
+    "github.com/urfave/cli",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
