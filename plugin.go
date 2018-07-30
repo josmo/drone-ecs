@@ -5,11 +5,12 @@ import (
 	"strconv"
 	"strings"
 
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecs"
-	"os"
 )
 
 type Plugin struct {
@@ -40,6 +41,11 @@ type Plugin struct {
 	TaskMemory              string
 	TaskExecutionRoleArn    string
 	Compatibilities         string
+	HealthCheckCommand      []string
+	HealthCheckInterval     int64
+	HealthCheckRetries      int64
+	HealthCheckStartPeriod  int64
+	HealthCheckTimeout      int64
 }
 
 func (p *Plugin) Exec() error {
@@ -173,14 +179,27 @@ func (p *Plugin) Exec() error {
 		p.NetworkMode = "bridge"
 	}
 
+	if len(p.HealthCheckCommand) != 0 {
+		healthcheck := ecs.HealthCheck{
+			Command:  aws.StringSlice(p.HealthCheckCommand),
+			Interval: &p.HealthCheckInterval,
+			Retries:  &p.HealthCheckRetries,
+			Timeout:  &p.HealthCheckTimeout,
+		}
+		if p.HealthCheckStartPeriod != 0 {
+			healthcheck.StartPeriod = &p.HealthCheckStartPeriod
+		}
+		definition.HealthCheck = &healthcheck
+	}
+
 	params := &ecs.RegisterTaskDefinitionInput{
 		ContainerDefinitions: []*ecs.ContainerDefinition{
 			&definition,
 		},
-		Family:                  aws.String(p.Family),
-		Volumes:                 []*ecs.Volume{},
-		TaskRoleArn:             aws.String(p.TaskRoleArn),
-		NetworkMode:             aws.String(p.NetworkMode),
+		Family:      aws.String(p.Family),
+		Volumes:     []*ecs.Volume{},
+		TaskRoleArn: aws.String(p.TaskRoleArn),
+		NetworkMode: aws.String(p.NetworkMode),
 	}
 
 	cleanedCompatibilities := strings.Trim(p.Compatibilities, " ")
