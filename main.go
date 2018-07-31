@@ -153,7 +153,7 @@ func main() {
 			Usage:  "List of launch types supported by the task",
 			EnvVar: "PLUGIN_COMPATIBILITIES",
 		},
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:   "healthcheck-command",
 			Usage:  "List representing the command that the container runs to determine if it is healthy. Must start with CMD to execute the command arguments directly, or CMD-SHELL to run the command with the container's default shell",
 			EnvVar: "PLUGIN_HEALTHCHECK_COMMAND",
