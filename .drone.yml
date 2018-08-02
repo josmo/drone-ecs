@@ -63,7 +63,8 @@ pipeline:
       fi
 
   publish_linux_amd64:
-    image: plugins/docker 
+    image: plugins/docker
+    group: publish
     auto_tag: true
     secrets: [ docker_password, docker_username, plugin_repo ]
     dockerfile: Dockerfile
@@ -72,6 +73,7 @@ pipeline:
 
   publish_linux_arm64:
     image: plugins/docker
+    group: publish
     auto_tag: true
     auto_tag_suffix: linux-arm64
     secrets: [ docker_password, docker_username, plugin_repo ]
@@ -81,6 +83,7 @@ pipeline:
 
   publish_linux_arm:
     image: plugins/docker
+    group: publish
     auto_tag: true
     auto_tag_suffix: linux-arm
     secrets: [ docker_password, docker_username, plugin_repo ]
