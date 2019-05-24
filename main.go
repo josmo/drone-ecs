@@ -15,8 +15,8 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "rancher publish"
-	app.Usage = "rancher publish"
+	app.Name = "AWS ECS Deploy"
+	app.Usage = "AWS ECS Deploy"
 	app.Action = run
 	app.Version = fmt.Sprintf("%s+%s", version, build)
 	app.Flags = []cli.Flag{
