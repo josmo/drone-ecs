@@ -1,11 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
-
-	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -47,6 +47,13 @@ type Plugin struct {
 	HealthCheckStartPeriod  int64
 	HealthCheckTimeout      int64
 }
+
+const (
+	hostPortBaseParseErr              = "error parsing port_mappings hostPort: "
+	containerBaseParseErr             = "error parsing port_mappings containerPort: "
+	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
+	maximumPercentBaseParseErr        = "error parsing deployment_configuration maximumPercent: "
+)
 
 func (p *Plugin) Exec() error {
 	fmt.Println("Drone AWS ECS Plugin built")
@@ -108,13 +115,15 @@ func (p *Plugin) Exec() error {
 		parts := strings.SplitN(cleanedPortMapping, " ", 2)
 		hostPort, hostPortErr := strconv.ParseInt(parts[0], 10, 64)
 		if hostPortErr != nil {
-			fmt.Println(hostPortErr.Error())
-			return hostPortErr
+			hostPortWrappedErr := errors.New(hostPortBaseParseErr + hostPortErr.Error())
+			fmt.Println(hostPortWrappedErr.Error())
+			return hostPortWrappedErr
 		}
-		containerPort, containerPortError := strconv.ParseInt(parts[1], 10, 64)
-		if containerPortError != nil {
-			fmt.Println(containerPortError.Error())
-			return containerPortError
+		containerPort, containerPortErr := strconv.ParseInt(parts[1], 10, 64)
+		if containerPortErr != nil {
+			containerPortWrappedErr := errors.New(containerBaseParseErr + containerPortErr.Error())
+			fmt.Println(containerPortWrappedErr.Error())
+			return containerPortWrappedErr
 		}
 
 		pair := ecs.PortMapping{
@@ -241,13 +250,15 @@ func (p *Plugin) Exec() error {
 	parts := strings.SplitN(cleanedDeploymentConfiguration, " ", 2)
 	minimumHealthyPercent, minimumHealthyPercentError := strconv.ParseInt(parts[0], 10, 64)
 	if minimumHealthyPercentError != nil {
-		fmt.Println(minimumHealthyPercentError.Error())
-		return minimumHealthyPercentError
+		minimumHealthyPercentWrappedErr := errors.New(minimumHealthyPercentBaseParseErr + minimumHealthyPercentError.Error())
+		fmt.Println(minimumHealthyPercentWrappedErr.Error())
+		return minimumHealthyPercentWrappedErr
 	}
 	maximumPercent, maximumPercentErr := strconv.ParseInt(parts[1], 10, 64)
 	if maximumPercentErr != nil {
-		fmt.Println(maximumPercentErr.Error())
-		return maximumPercentErr
+		maximumPercentWrappedErr := errors.New(maximumPercentBaseParseErr + maximumPercentErr.Error())
+		fmt.Println(maximumPercentWrappedErr.Error())
+		return maximumPercentWrappedErr
 	}
 
 	sparams.DeploymentConfiguration = &ecs.DeploymentConfiguration{
@@ -264,5 +275,4 @@ func (p *Plugin) Exec() error {
 	fmt.Println(sresp)
 	fmt.Println(resp)
 	return nil
-
 }
