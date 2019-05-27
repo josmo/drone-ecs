@@ -46,6 +46,14 @@ type Plugin struct {
 	HealthCheckRetries      int64
 	HealthCheckStartPeriod  int64
 	HealthCheckTimeout      int64
+
+	// ServiceNetworkSecurityGroups represents the VPC security groups to use
+	// when running awsvpc network mode.
+	ServiceNetworkSecurityGroups []string
+
+	// ServiceNetworkSubnets represents the VPC security groups to use when
+	// running awsvpc network mode.
+	ServiceNetworkSubnets []string
 }
 
 const (
@@ -229,17 +237,18 @@ func (p *Plugin) Exec() error {
 	if len(p.TaskExecutionRoleArn) != 0 {
 		params.ExecutionRoleArn = aws.String(p.TaskExecutionRoleArn)
 	}
-	resp, err := svc.RegisterTaskDefinition(params)
 
+	resp, err := svc.RegisterTaskDefinition(params)
 	if err != nil {
 		return err
 	}
 
 	val := *(resp.TaskDefinition.TaskDefinitionArn)
 	sparams := &ecs.UpdateServiceInput{
-		Cluster:        aws.String(p.Cluster),
-		Service:        aws.String(p.Service),
-		TaskDefinition: aws.String(val),
+		Cluster:              aws.String(p.Cluster),
+		Service:              aws.String(p.Service),
+		TaskDefinition:       aws.String(val),
+		NetworkConfiguration: p.setupServiceNetworkConfiguration(),
 	}
 
 	if p.DesiredCount >= 0 {
@@ -267,7 +276,6 @@ func (p *Plugin) Exec() error {
 	}
 
 	sresp, serr := svc.UpdateService(sparams)
-
 	if serr != nil {
 		return serr
 	}
@@ -275,4 +283,24 @@ func (p *Plugin) Exec() error {
 	fmt.Println(sresp)
 	fmt.Println(resp)
 	return nil
+}
+
+// setupServiceNetworkConfiguration is used to setup the ECS service network
+// configuration based on operator input.
+func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
+	netConfig := ecs.NetworkConfiguration{AwsvpcConfiguration: &ecs.AwsVpcConfiguration{}}
+
+	if p.NetworkMode != ecs.NetworkModeAwsvpc {
+		return &netConfig
+	}
+
+	if len(p.ServiceNetworkSubnets) > 0 {
+		netConfig.AwsvpcConfiguration.SetSubnets(aws.StringSlice(p.ServiceNetworkSubnets))
+	}
+
+	if len(p.ServiceNetworkSecurityGroups) > 0 {
+		netConfig.AwsvpcConfiguration.SetSecurityGroups(aws.StringSlice(p.ServiceNetworkSecurityGroups))
+	}
+
+	return &netConfig
 }
