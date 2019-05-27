@@ -295,22 +295,12 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 	}
 
 	if len(p.ServiceNetworkSubnets) > 0 {
-		netConfig.AwsvpcConfiguration.SetSubnets(p.stringSliceToPointerStringSlice(p.ServiceNetworkSubnets))
+		netConfig.AwsvpcConfiguration.SetSubnets(aws.StringSlice(p.ServiceNetworkSubnets))
 	}
 
 	if len(p.ServiceNetworkSecurityGroups) > 0 {
-		netConfig.AwsvpcConfiguration.SetSecurityGroups(p.stringSliceToPointerStringSlice(p.ServiceNetworkSecurityGroups))
+		netConfig.AwsvpcConfiguration.SetSecurityGroups(aws.StringSlice(p.ServiceNetworkSecurityGroups))
 	}
 
 	return &netConfig
-}
-
-// stringSliceToPointerStringSlice converts and string slice to a slice of
-// string pointers.
-func (p *Plugin) stringSliceToPointerStringSlice(s []string) []*string {
-	var output []*string
-	for i := range s {
-		output = append(output, &s[i])
-	}
-	return output
 }
