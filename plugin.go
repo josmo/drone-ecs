@@ -298,7 +298,7 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 		netConfig.AwsvpcConfiguration.SetSubnets(p.stringSliceToPointerStringSlice(p.ServiceNetworkSubnets))
 	}
 
-	if len(p.ServiceNetworkSecurityGroups) == 0 {
+	if len(p.ServiceNetworkSecurityGroups) > 0 {
 		netConfig.AwsvpcConfiguration.SetSecurityGroups(p.stringSliceToPointerStringSlice(p.ServiceNetworkSecurityGroups))
 	}
 
