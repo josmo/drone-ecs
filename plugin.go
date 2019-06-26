@@ -47,6 +47,9 @@ type Plugin struct {
 	HealthCheckStartPeriod  int64
 	HealthCheckTimeout      int64
 
+	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
+	ServiceNetworkAssignPublicIp string
+
 	// ServiceNetworkSecurityGroups represents the VPC security groups to use
 	// when running awsvpc network mode.
 	ServiceNetworkSecurityGroups []string
@@ -292,6 +295,10 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 
 	if p.NetworkMode != ecs.NetworkModeAwsvpc {
 		return &netConfig
+	}
+	
+	if len(p.ServiceNetworkAssignPublicIp) != 0 {
+		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp);
 	}
 
 	if len(p.ServiceNetworkSubnets) > 0 {
