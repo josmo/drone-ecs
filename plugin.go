@@ -297,7 +297,7 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 		return &netConfig
 	}
 	
-	if p.ServiceNetworkAssignPublicIp != 0 {
+	if len(p.ServiceNetworkAssignPublicIp) != 0 {
 		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp);
 	}
 
