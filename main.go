@@ -241,7 +241,7 @@ func run(c *cli.Context) error {
 		HealthCheckRetries:           c.Int64("healthcheck-retries"),
 		HealthCheckStartPeriod:       c.Int64("healthcheck-start-period"),
 		HealthCheckTimeout:           c.Int64("healthcheck-timeout"),
-		ServiceNetworkAssignPublicIp: c.StringSlice("service-network-assign-public-ip"),
+		ServiceNetworkAssignPublicIp: c.String("service-network-assign-public-ip"),
 		ServiceNetworkSecurityGroups: c.StringSlice("service-network-security-groups"),
 		ServiceNetworkSubnets:        c.StringSlice("service-network-subnets"),
 	}
