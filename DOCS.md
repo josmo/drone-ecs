@@ -27,7 +27,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `task_memory` - The amount of memory (in MiB) used by the task.It can be expressed as an integer using MiB, for example 1024, or as a string using GB. Required if using Fargate launch type
 * `task_execution_role_arn` - The Amazon Resource Name (ARN) of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
 * `compatibilities` - Space-delimited list of launch types supported by the task, defaults to EC2 if not specified
-* `network_mode` - If compatibilities includes FARGATE, this must be set to awsvpc.
+* `task_network_mode` - If compatibilities includes FARGATE, this must be set to awsvpc.
 * `service_network_assign_public_ip` - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 * `service_network_subnets` - The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.
 * `service_network_security_groups` - The subnets associated with the task or service. There is a limit of 16 subnets that can be specified per AwsVpcConfiguration.
