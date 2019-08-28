@@ -26,7 +26,8 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `task_cpu` - The number of CPU units used by the task. It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu
 * `task_memory` - The amount of memory (in MiB) used by the task.It can be expressed as an integer using MiB, for example 1024, or as a string using GB. Required if using Fargate launch type
 * `task_execution_role_arn` - The Amazon Resource Name (ARN) of the task execution role that the Amazon ECS container agent and the Docker daemon can assume.
-* `compatibilities` - List of launch types supported by the task, defaults to EC2 if not specified
+* `compatibilities` - Space-delimited list of launch types supported by the task, defaults to EC2 if not specified
+* `task_network_mode` - If compatibilities includes FARGATE, this must be set to awsvpc.
 * `service_network_assign_public_ip` - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 * `service_network_subnets` - The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.
 * `service_network_security_groups` - The subnets associated with the task or service. There is a limit of 16 subnets that can be specified per AwsVpcConfiguration.
@@ -34,33 +35,33 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 ## Example
 
 ```yaml
-deploy:
-  ecs:
+steps:
+  - name: Deploy to ECS
     image: peloton/drone-ecs
-
-    region: eu-west-1
-    family: my-ecs-task
-    docker_image: namespace/repo
-    tag: latest
-    service: my-ecs-service
-    task_role_arn: arn:aws:iam::012345678901:role/rolename
-    log_driver: awslogs
-    log_options:
-      - awslogs-group=my-ecs-group
-      - awslogs-region=us-east-1
-    environment_variables:
-      - DATABASE_URI=$$MY_DATABASE_URI
-    secret_environment_variables:
-      - MY_SECRET=MY_SANDBOX_SECRET
-      - MY_ACCESS_KEY
-    labels:
-      - traefik.frontend.rule=Host:my.host.gov
-      - traefik.backend=pirates
-    port_mappings:
-      - 80 9000
-    memoryReservation: 128
-    cpu: 1024
-    desired_count: 1
-    deployment_configuration: 50 200
-    secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
+    settings:
+      region: eu-west-1
+      family: my-ecs-task
+      docker_image: namespace/repo
+      tag: latest
+      service: my-ecs-service
+      task_role_arn: arn:aws:iam::012345678901:role/rolename
+      log_driver: awslogs
+      log_options:
+        - awslogs-group=my-ecs-group
+        - awslogs-region=us-east-1
+      environment_variables:
+        - DATABASE_URI=$$MY_DATABASE_URI
+      secret_environment_variables:
+        - MY_SECRET=MY_SANDBOX_SECRET
+        - MY_ACCESS_KEY
+      labels:
+        - traefik.frontend.rule=Host:my.host.gov
+        - traefik.backend=pirates
+      port_mappings:
+        - 80 9000
+      memoryReservation: 128
+      cpu: 1024
+      desired_count: 1
+      deployment_configuration: 50 200
+      secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
 ```
