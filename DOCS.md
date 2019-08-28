@@ -34,33 +34,33 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 ## Example
 
 ```yaml
-deploy:
-  ecs:
+steps:
+  - name: Deploy to ECS
     image: peloton/drone-ecs
-
-    region: eu-west-1
-    family: my-ecs-task
-    docker_image: namespace/repo
-    tag: latest
-    service: my-ecs-service
-    task_role_arn: arn:aws:iam::012345678901:role/rolename
-    log_driver: awslogs
-    log_options:
-      - awslogs-group=my-ecs-group
-      - awslogs-region=us-east-1
-    environment_variables:
-      - DATABASE_URI=$$MY_DATABASE_URI
-    secret_environment_variables:
-      - MY_SECRET=MY_SANDBOX_SECRET
-      - MY_ACCESS_KEY
-    labels:
-      - traefik.frontend.rule=Host:my.host.gov
-      - traefik.backend=pirates
-    port_mappings:
-      - 80 9000
-    memoryReservation: 128
-    cpu: 1024
-    desired_count: 1
-    deployment_configuration: 50 200
-    secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
+    settings:
+      region: eu-west-1
+      family: my-ecs-task
+      docker_image: namespace/repo
+      tag: latest
+      service: my-ecs-service
+      task_role_arn: arn:aws:iam::012345678901:role/rolename
+      log_driver: awslogs
+      log_options:
+        - awslogs-group=my-ecs-group
+        - awslogs-region=us-east-1
+      environment_variables:
+        - DATABASE_URI=$$MY_DATABASE_URI
+      secret_environment_variables:
+        - MY_SECRET=MY_SANDBOX_SECRET
+        - MY_ACCESS_KEY
+      labels:
+        - traefik.frontend.rule=Host:my.host.gov
+        - traefik.backend=pirates
+      port_mappings:
+        - 80 9000
+      memoryReservation: 128
+      cpu: 1024
+      desired_count: 1
+      deployment_configuration: 50 200
+      secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
 ```
