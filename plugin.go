@@ -46,6 +46,7 @@ type Plugin struct {
 	HealthCheckRetries      int64
 	HealthCheckStartPeriod  int64
 	HealthCheckTimeout      int64
+	Ulimits                 []string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -60,6 +61,8 @@ type Plugin struct {
 }
 
 const (
+	softLimitBaseParseErr             = "error parsing ulimits softLimit: "
+	hardLimitBaseParseErr             = "error parsing ulimits hardLimit: "
 	hostPortBaseParseErr              = "error parsing port_mappings hostPort: "
 	containerBaseParseErr             = "error parsing port_mappings containerPort: "
 	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
@@ -172,6 +175,33 @@ func (p *Plugin) Exec() error {
 			fmt.Println("invalid syntax in secret enironment var", envVar)
 		}
 		definition.Environment = append(definition.Environment, &pair)
+	}
+
+	// Ulimits
+	for _, uLimit := range p.Ulimits {
+		cleanedULimit := strings.Trim(uLimit, " ")
+		parts := strings.SplitN(cleanedULimit, " ", 3)
+		name := strings.Trim(parts[0], " ")
+		softLimit, softLimitErr := strconv.ParseInt(parts[1], 10, 64)
+		if softLimitErr != nil {
+			softLimitWrappedErr := errors.New(softLimitBaseParseErr + softLimitErr.Error())
+			fmt.Println(softLimitWrappedErr.Error())
+			return softLimitWrappedErr
+		}
+		hardLimit, hardLimitErr := strconv.ParseInt(parts[2], 10, 64)
+		if hardLimitErr != nil {
+			hardLimitWrappedErr := errors.New(hardLimitBaseParseErr + hardLimitErr.Error())
+			fmt.Println(hardLimitWrappedErr.Error())
+			return hardLimitWrappedErr
+		}
+
+		pair := ecs.Ulimit{
+			Name: aws.String(name),
+			HardLimit: aws.Int64(hardLimit),
+			SoftLimit: aws.Int64(softLimit),
+		}
+
+		definition.Ulimits = append(definition.Ulimits, &pair)
 	}
 
 	// DockerLabels
