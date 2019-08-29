@@ -249,7 +249,7 @@ func run(c *cli.Context) error {
 		ServiceNetworkAssignPublicIp: c.String("service-network-assign-public-ip"),
 		ServiceNetworkSecurityGroups: c.StringSlice("service-network-security-groups"),
 		ServiceNetworkSubnets:        c.StringSlice("service-network-subnets"),
-		ULimits                       c.StringSlice("ulimits"),
+		ULimits:                      c.StringSlice("ulimits"),
 	}
 	return plugin.Exec()
 }
