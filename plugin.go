@@ -196,7 +196,7 @@ func (p *Plugin) Exec() error {
 		}
 
 		pair := ecs.Ulimit{
-			Name: awsString(name),
+			Name: aws.String(name),
 			HardLimit: aws.Int64(hardLimit),
 			SoftLimit: aws.Int64(softLimit),
 		}
