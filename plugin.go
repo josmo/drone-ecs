@@ -61,6 +61,8 @@ type Plugin struct {
 }
 
 const (
+	softLimitBaseParseErr             = "error parsing ulimits softLimit: "
+	hardLimitBaseParseErr             = "error parsing ulimits hardLimit: "
 	hostPortBaseParseErr              = "error parsing port_mappings hostPort: "
 	containerBaseParseErr             = "error parsing port_mappings containerPort: "
 	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
