@@ -201,6 +201,11 @@ func main() {
 			Usage:  "The subnets to associate with the service",
 			EnvVar: "PLUGIN_SERVICE_NETWORK_SUBNETS",
 		},
+		cli.StringSliceFlag{
+			Name:   "ulimits",
+			Usage:  "ECS ulimits",
+			EnvVar: "PLUGIN_ULIMITS",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -244,6 +249,7 @@ func run(c *cli.Context) error {
 		ServiceNetworkAssignPublicIp: c.String("service-network-assign-public-ip"),
 		ServiceNetworkSecurityGroups: c.StringSlice("service-network-security-groups"),
 		ServiceNetworkSubnets:        c.StringSlice("service-network-subnets"),
+		ULimits                       c.StringSlice("ulimits"),
 	}
 	return plugin.Exec()
 }
