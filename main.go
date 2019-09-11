@@ -91,6 +91,11 @@ func main() {
 			EnvVar: "PLUGIN_LABELS",
 		},
 		cli.StringSliceFlag{
+			Name:   "entry-point",
+			Usage:  "A list of values to build the container entry point argument",
+			EnvVar: "PLUGIN_ENTRY_POINT",
+		},
+		cli.StringSliceFlag{
 			Name:   "environment-variables",
 			Usage:  "ECS environment-variables",
 			EnvVar: "PLUGIN_ENVIRONMENT_VARIABLES",
@@ -229,6 +234,7 @@ func run(c *cli.Context) error {
 		PortMappings:                 c.StringSlice("port-mappings"),
 		Environment:                  c.StringSlice("environment-variables"),
 		SecretEnvironment:            c.StringSlice("secret-environment-variables"),
+		EntryPoint:                   c.StringSlice("entry-point"),
 		Labels:                       c.StringSlice("labels"),
 		CPU:                          c.Int64("cpu"),
 		Memory:                       c.Int64("memory"),

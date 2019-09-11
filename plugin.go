@@ -31,6 +31,7 @@ type Plugin struct {
 	Environment             []string
 	SecretEnvironment       []string
 	Labels                  []string
+	EntryPoint              []string
 	DesiredCount            int64
 	CPU                     int64
 	Memory                  int64
@@ -208,6 +209,11 @@ func (p *Plugin) Exec() error {
 	for _, label := range p.Labels {
 		parts := strings.SplitN(label, "=", 2)
 		definition.DockerLabels[strings.Trim(parts[0], " ")] = aws.String(strings.Trim(parts[1], " "))
+	}
+
+	// EntryPoint
+	for _, v := range p.EntryPoint {
+		definition.EntryPoint = append(definition.EntryPoint, &v)
 	}
 
 	// LogOptions
