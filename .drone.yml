@@ -4,24 +4,18 @@ name: default
 workspace:
   base: /go
   path: src/github.com/${DRONE_REPO_OWNER}/${DRONE_REPO_NAME}
+
 steps:
-- name: deps
-  image: golang:1.10
-  pull: true
-  commands:
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
 
 - name: test
-  image: golang:1.10
-  depends_on: [ deps ]
+  image: golang:1.13
   pull: true
   commands:
   - go vet
   - go test -cover -coverprofile=coverage.out
 
 - name: build_linux_amd64
-  image: golang:1.10
+  image: golang:1.13
   depends_on: [ test ]
   environment:
     GOOS: linux
@@ -36,7 +30,7 @@ steps:
     fi
 
 - name: build_linux_arm64
-  image: golang:1.10
+  image: golang:1.13
   depends_on: [ test ]
   environment:
     GOOS: linux
@@ -51,7 +45,7 @@ steps:
     fi
 
 - name: build_linux_arm
-  image: golang:1.10
+  image: golang:1.13
   depends_on: [ test ]
   environment:
     GOOS: linux
