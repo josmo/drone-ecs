@@ -22,6 +22,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `log_driver` - The log driver to use for the container
 * `log_options` - The configuration options to send to the log driver
 * `labels` - A key/value map of labels to add to the container
+* `entry_point` - A list of strings to build the container entry point configuration
 * `secret_environment_variables` - List of Environment Variables to be injected into the container from drone secrets. You can use the name of the secret itself or set a custom name to be used within the container. Syntax is `NAME` (must match the name of one of your secrets) or `CUSTOM_NAME=NAME`
 * `task_cpu` - The number of CPU units used by the task. It can be expressed as an integer using CPU units, for example 1024, or as a string using vCPUs, for example 1 vCPU or 1 vcpu
 * `task_memory` - The amount of memory (in MiB) used by the task.It can be expressed as an integer using MiB, for example 1024, or as a string using GB. Required if using Fargate launch type
