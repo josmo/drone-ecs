@@ -30,8 +30,8 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `compatibilities` - Space-delimited list of launch types supported by the task, defaults to EC2 if not specified
 * `task_network_mode` - If compatibilities includes FARGATE, this must be set to awsvpc.
 * `service_network_assign_public_ip` - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
-* `service_network_subnets` - The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.
-* `service_network_security_groups` - The subnets associated with the task or service. There is a limit of 16 subnets that can be specified per AwsVpcConfiguration.
+* `service_network_security_groups` - The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.
+* `service_network_subnets` - The subnets associated with the task or service. There is a limit of 16 subnets that can be specified per AwsVpcConfiguration.
 * `ulimits` - The Ulimit property specifies the ulimit settings to pass to the container. This is an array of strings in the format: `name softLimit hardLimit` where name is one of: core, cpu, data, fsize, locks, memlock, msgqueue, nice, nofile, nproc, rss, rtprio, rttime, sigpending, stack and soft/hard limits are integers.
 
 ## Example
