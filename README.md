@@ -1,7 +1,7 @@
 [![Build Status](https://cloud.drone.io/api/badges/josmo/drone-ecs/status.svg)](https://cloud.drone.io/josmo/drone-ecs)
 [![Go Doc](https://godoc.org/github.com/josmo/drone-ecs?status.svg)](http://godoc.org/github.com/josmo/drone-ecs)
 [![Go Report](https://goreportcard.com/badge/github.com/josmo/drone-ecs)](https://goreportcard.com/report/github.com/josmo/drone-ecs)
-[![](https://images.microbadger.com/badges/image/peloton/drone-ecs.svg)](https://microbadger.com/images/peloton/drone-ecs "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/pelotech/drone-ecs.svg)](https://microbadger.com/images/pelotech/drone-ecs "Get your own image badge on microbadger.com")
 
 # drone-ecs
 
@@ -26,7 +26,7 @@ docker run --rm                          \
   -e PLUGIN_DOCKER_IMAGE=<image>         \
   -v $(pwd):$(pwd)                       \
   -w $(pwd)                              \
-  peloton/drone-ecs
+  pelotech/drone-ecs
 ```
 
 ### Contribution

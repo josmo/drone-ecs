@@ -39,7 +39,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 ```yaml
 steps:
   - name: Deploy to ECS
-    image: peloton/drone-ecs
+    image: pelotech/drone-ecs
     settings:
       region: eu-west-1
       family: my-ecs-task
