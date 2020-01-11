@@ -197,7 +197,7 @@ func (p *Plugin) Exec() error {
 		}
 
 		pair := ecs.Ulimit{
-			Name: aws.String(name),
+			Name:      aws.String(name),
 			HardLimit: aws.Int64(hardLimit),
 			SoftLimit: aws.Int64(softLimit),
 		}
@@ -330,11 +330,11 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 	netConfig := ecs.NetworkConfiguration{AwsvpcConfiguration: &ecs.AwsVpcConfiguration{}}
 
 	if p.NetworkMode != ecs.NetworkModeAwsvpc {
-		return &netConfig
+		return nil
 	}
-	
+
 	if len(p.ServiceNetworkAssignPublicIp) != 0 {
-		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp);
+		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp)
 	}
 
 	if len(p.ServiceNetworkSubnets) > 0 {
