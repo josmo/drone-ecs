@@ -211,6 +211,16 @@ func main() {
 			Usage:  "ECS ulimits",
 			EnvVar: "PLUGIN_ULIMITS",
 		},
+		cli.StringSliceFlag{
+			Name:   "mount-points",
+			Usage:  "ECS mount points",
+			EnvVar: "PLUGIN_MOUNT_POINTS",
+		},
+		cli.StringSliceFlag{
+			Name:   "volumes",
+			Usage:  "ECS volume definitions",
+			EnvVar: "PLUGIN_VOLUMES",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -256,6 +266,8 @@ func run(c *cli.Context) error {
 		ServiceNetworkSecurityGroups: c.StringSlice("service-network-security-groups"),
 		ServiceNetworkSubnets:        c.StringSlice("service-network-subnets"),
 		Ulimits:                      c.StringSlice("ulimits"),
+		MountPoints:                  c.StringSlice("mount-points"),
+		Volumes:                      c.StringSlice("volumes"),
 	}
 	return plugin.Exec()
 }

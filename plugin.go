@@ -48,6 +48,8 @@ type Plugin struct {
 	HealthCheckStartPeriod  int64
 	HealthCheckTimeout      int64
 	Ulimits                 []string
+	MountPoints             []string
+	Volumes                 []string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -68,6 +70,7 @@ const (
 	containerBaseParseErr             = "error parsing port_mappings containerPort: "
 	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
 	maximumPercentBaseParseErr        = "error parsing deployment_configuration maximumPercent: "
+	readOnlyBoolBaseParseErr          = "error parsing mount_points readOnly: "
 )
 
 func (p *Plugin) Exec() error {
@@ -108,6 +111,7 @@ func (p *Plugin) Exec() error {
 		VolumesFrom: []*ecs.VolumeFrom{},
 		//WorkingDirectory: aws.String("String"),
 	}
+	volumes := []*ecs.Volume{}
 
 	if p.CPU != 0 {
 		definition.Cpu = aws.Int64(p.CPU)
@@ -122,6 +126,42 @@ func (p *Plugin) Exec() error {
 		if p.MemoryReservation != 0 {
 			definition.MemoryReservation = aws.Int64(p.MemoryReservation)
 		}
+	}
+
+	// Volumes
+	for _, volume := range p.Volumes {
+		cleanedVolume := strings.Trim(volume, " ")
+		parts := strings.SplitN(cleanedVolume, " ", 2)
+		vol := ecs.Volume{
+			Name: aws.String(parts[0]),
+		}
+		if len(parts) == 2 {
+			vol.Host = &ecs.HostVolumeProperties{
+				SourcePath: aws.String(parts[1]),
+			}
+		}
+
+		volumes = append(volumes, &vol)
+	}
+
+	// Mount Points
+	for _, mountPoint := range p.MountPoints {
+		cleanedMountPoint := strings.Trim(mountPoint, " ")
+		parts := strings.SplitN(cleanedMountPoint, " ", 3)
+
+		ro, readOnlyBoolParseErr := strconv.ParseBool(parts[2])
+		if readOnlyBoolParseErr != nil {
+			readOnlyBoolWrappedErr := errors.New(readOnlyBoolBaseParseErr + readOnlyBoolParseErr.Error())
+			fmt.Println(readOnlyBoolWrappedErr.Error())
+			return readOnlyBoolWrappedErr
+		}
+
+		mpoint := ecs.MountPoint{
+			SourceVolume:  aws.String(parts[0]),
+			ContainerPath: aws.String(parts[1]),
+			ReadOnly:      aws.Bool(ro),
+		}
+		definition.MountPoints = append(definition.MountPoints, &mpoint)
 	}
 
 	// Port mappings
@@ -197,7 +237,7 @@ func (p *Plugin) Exec() error {
 		}
 
 		pair := ecs.Ulimit{
-			Name: aws.String(name),
+			Name:      aws.String(name),
 			HardLimit: aws.Int64(hardLimit),
 			SoftLimit: aws.Int64(softLimit),
 		}
@@ -253,7 +293,7 @@ func (p *Plugin) Exec() error {
 			&definition,
 		},
 		Family:      aws.String(p.Family),
-		Volumes:     []*ecs.Volume{},
+		Volumes:     volumes,
 		TaskRoleArn: aws.String(p.TaskRoleArn),
 		NetworkMode: aws.String(p.NetworkMode),
 	}
@@ -330,11 +370,11 @@ func (p *Plugin) setupServiceNetworkConfiguration() *ecs.NetworkConfiguration {
 	netConfig := ecs.NetworkConfiguration{AwsvpcConfiguration: &ecs.AwsVpcConfiguration{}}
 
 	if p.NetworkMode != ecs.NetworkModeAwsvpc {
-		return &netConfig
+		return nil
 	}
-	
+
 	if len(p.ServiceNetworkAssignPublicIp) != 0 {
-		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp);
+		netConfig.AwsvpcConfiguration.SetAssignPublicIp(p.ServiceNetworkAssignPublicIp)
 	}
 
 	if len(p.ServiceNetworkSubnets) > 0 {

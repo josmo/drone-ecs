@@ -33,6 +33,9 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `service_network_security_groups` - The security groups associated with the task or service. If you do not specify a security group, the default security group for the VPC is used. There is a limit of 5 security groups that can be specified per AwsVpcConfiguration.
 * `service_network_subnets` - The subnets associated with the task or service. There is a limit of 16 subnets that can be specified per AwsVpcConfiguration.
 * `ulimits` - The Ulimit property specifies the ulimit settings to pass to the container. This is an array of strings in the format: `name softLimit hardLimit` where name is one of: core, cpu, data, fsize, locks, memlock, msgqueue, nice, nofile, nproc, rss, rtprio, rttime, sigpending, stack and soft/hard limits are integers.
+* `mount_points` - Mount points from host to container, format is `sourceVolume containerPath readOnly` where `sourceVolume`, `containerPath` are strings, `readOnly` is string [`true`, `false`]
+* `volumes` - Bind Mount Volumes, format is `name sourcePath` both values are strings. Note with FARGATE launch type, you only provide the name of the volume, not the `sourcePath`
+
 
 ## Example
 
@@ -67,5 +70,17 @@ steps:
       deployment_configuration: 50 200
       ulimits:
         - nofile 2048 4096
+      # this mount_point and volumes config will give drone_runner_docker access to docker.sock
+      mount_points:
+        - dockersock /var/run/docker.sock false
+      volumes:
+        - dockersock /var/run/docker.sock      
       secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
+    # declaring the environment is necessary to get secret_environment_variables to work  
+    environment:
+      MY_SANDBOX_SECRET:
+        from_secret: MY_SANDBOX_SECRET
+      MY_ACCESS_KEY:
+        from_secret: access_key
+
 ```
