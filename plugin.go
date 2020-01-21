@@ -253,7 +253,9 @@ func (p *Plugin) Exec() error {
 
 	// EntryPoint
 	for _, v := range p.EntryPoint {
-		definition.EntryPoint = append(definition.EntryPoint, &v)
+		var command string
+		command = v
+		definition.EntryPoint = append(definition.EntryPoint, &command)
 	}
 
 	// LogOptions
