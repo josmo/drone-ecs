@@ -31,6 +31,11 @@ func main() {
 			EnvVar: "PLUGIN_SECRET_KEY,ECS_SECRET_KEY,AWS_SECRET_KEY",
 		},
 		cli.StringFlag{
+			Name:   "user-role-arn",
+			Usage:  "AWS user role",
+			EnvVar: "PLUGIN_USER_ROLE_ARN,ECS_USER_ROLE_ARN,AWS_USER_ROLE_ARN",
+		},
+		cli.StringFlag{
 			Name:   "region",
 			Usage:  "aws region",
 			EnvVar: "PLUGIN_REGION",
@@ -231,6 +236,7 @@ func run(c *cli.Context) error {
 	plugin := Plugin{
 		Key:                          c.String("access-key"),
 		Secret:                       c.String("secret-key"),
+		UserRoleArn:                  c.String("user-role-arn"),
 		Region:                       c.String("region"),
 		Family:                       c.String("family"),
 		TaskRoleArn:                  c.String("task-role-arn"),
