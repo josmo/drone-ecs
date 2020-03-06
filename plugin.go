@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecs"
 )
@@ -16,6 +17,7 @@ import (
 type Plugin struct {
 	Key                     string
 	Secret                  string
+	UserRoleArn             string
 	Region                  string
 	Family                  string
 	TaskRoleArn             string
@@ -81,7 +83,19 @@ func (p *Plugin) Exec() error {
 		awsConfig.Credentials = credentials.NewStaticCredentials(p.Key, p.Secret, "")
 	}
 	awsConfig.Region = aws.String(p.Region)
-	svc := ecs.New(session.New(&awsConfig))
+
+	var svc *ecs.ECS
+	sess := session.Must(session.NewSession(&awsConfig))
+
+	// If user role ARN is set then assume role here
+	if len(p.UserRoleArn) > 0 {
+		awsConfigArn := aws.Config{Region: aws.String(p.Region)}
+		arnCredentials := stscreds.NewCredentials(sess, p.UserRoleArn)
+		awsConfigArn.Credentials = arnCredentials
+		svc = ecs.New(sess, &awsConfigArn)
+	} else {
+		svc = ecs.New(sess)
+	}
 
 	Image := p.DockerImage + ":" + p.Tag
 	if len(p.ContainerName) == 0 {
@@ -184,7 +198,7 @@ func (p *Plugin) Exec() error {
 		pair := ecs.PortMapping{
 			ContainerPort: aws.Int64(containerPort),
 			HostPort:      aws.Int64(hostPort),
-			Protocol:      aws.String("TransportProtocol"),
+			Protocol:      aws.String("tcp"),
 		}
 
 		definition.PortMappings = append(definition.PortMappings, &pair)

@@ -4,6 +4,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 
 * `access_key` - AWS access key ID, MUST be an IAM user with the AmazonEC2ContainerServiceFullAccess policy attached
 * `secret_key` - AWS secret access key
+* `user_role_arn` - AWS user role. Optional. Switch to different role after initial authentication
 * `region` - AWS availability zone
 * `service` - Name of the service in the cluster, **MUST** be created already in ECS
 * `container_name` - Name of the container, defaults to ${family}-container
