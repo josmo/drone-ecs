@@ -17,7 +17,7 @@ import (
 type Plugin struct {
 	Key                     string
 	Secret                  string
-	UserRoleArn				string
+	UserRoleArn             string
 	Region                  string
 	Family                  string
 	TaskRoleArn             string
