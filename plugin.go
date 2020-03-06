@@ -89,12 +89,9 @@ func (p *Plugin) Exec() error {
 
 	// If user role ARN is set then assume role here
 	if len(p.UserRoleArn) > 0 {
-		var arnCredentials *credentials.Credentials
-
 		awsConfigArn := aws.Config{Region: aws.String(p.Region)}
-		arnCredentials = stscreds.NewCredentials(sess, p.UserRoleArn, func(p *stscreds.AssumeRoleProvider) {})
+		arnCredentials := stscreds.NewCredentials(sess, p.UserRoleArn)
 		awsConfigArn.Credentials = arnCredentials
-
 		svc = ecs.New(sess, &awsConfigArn)
 	} else {
 		svc = ecs.New(sess)
@@ -338,7 +335,6 @@ func (p *Plugin) Exec() error {
 
 	resp, err := svc.RegisterTaskDefinition(params)
 	if err != nil {
-		fmt.Println("Error when registering task definition:", err.Error())
 		return err
 	}
 
@@ -376,7 +372,6 @@ func (p *Plugin) Exec() error {
 
 	sresp, serr := svc.UpdateService(sparams)
 	if serr != nil {
-		fmt.Println("Error when updating service:", serr.Error())
 		return serr
 	}
 
