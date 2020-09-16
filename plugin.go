@@ -15,43 +15,44 @@ import (
 )
 
 type Plugin struct {
-	Key                     string
-	Secret                  string
-	UserRoleArn             string
-	Region                  string
-	Family                  string
-	TaskRoleArn             string
-	Service                 string
-	ContainerName           string
-	DockerImage             string
-	Tag                     string
-	Cluster                 string
-	LogDriver               string
-	LogOptions              []string
-	DeploymentConfiguration string
-	PortMappings            []string
-	Environment             []string
-	SecretEnvironment       []string
-	Labels                  []string
-	EntryPoint              []string
-	DesiredCount            int64
-	CPU                     int64
-	Memory                  int64
-	MemoryReservation       int64
-	NetworkMode             string
-	YamlVerified            bool
-	TaskCPU                 string
-	TaskMemory              string
-	TaskExecutionRoleArn    string
-	Compatibilities         string
-	HealthCheckCommand      []string
-	HealthCheckInterval     int64
-	HealthCheckRetries      int64
-	HealthCheckStartPeriod  int64
-	HealthCheckTimeout      int64
-	Ulimits                 []string
-	MountPoints             []string
-	Volumes                 []string
+	Key                       string
+	Secret                    string
+	UserRoleArn               string
+	Region                    string
+	Family                    string
+	TaskRoleArn               string
+	Service                   string
+	ContainerName             string
+	DockerImage               string
+	Tag                       string
+	Cluster                   string
+	LogDriver                 string
+	LogOptions                []string
+	DeploymentConfiguration   string
+	PortMappings              []string
+	Environment               []string
+	SecretEnvironment         []string
+	SecretsManagerEnvironment []string
+	Labels                    []string
+	EntryPoint                []string
+	DesiredCount              int64
+	CPU                       int64
+	Memory                    int64
+	MemoryReservation         int64
+	NetworkMode               string
+	YamlVerified              bool
+	TaskCPU                   string
+	TaskMemory                string
+	TaskExecutionRoleArn      string
+	Compatibilities           string
+	HealthCheckCommand        []string
+	HealthCheckInterval       int64
+	HealthCheckRetries        int64
+	HealthCheckStartPeriod    int64
+	HealthCheckTimeout        int64
+	Ulimits                   []string
+	MountPoints               []string
+	Volumes                   []string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -111,6 +112,7 @@ func (p *Plugin) Exec() error {
 		DockerSecurityOptions: []*string{},
 		EntryPoint:            []*string{},
 		Environment:           []*ecs.KeyValuePair{},
+		Secrets:               []*ecs.Secret{},
 		Essential:             aws.Bool(true),
 		ExtraHosts:            []*ecs.HostEntry{},
 
@@ -230,6 +232,16 @@ func (p *Plugin) Exec() error {
 			fmt.Println("invalid syntax in secret enironment var", envVar)
 		}
 		definition.Environment = append(definition.Environment, &pair)
+	}
+
+	// Environment variables from AWS Secrets manager
+	for _, envVar := range p.SecretsManagerEnvironment {
+		parts := strings.SplitN(envVar, "=", 2)
+		pair := ecs.Secret{
+			Name:  aws.String(strings.Trim(parts[0], " ")),
+			ValueFrom: aws.String(strings.Trim(parts[1], " ")),
+		}
+		definition.Secrets = append(definition.Secrets, &pair)
 	}
 
 	// Ulimits
