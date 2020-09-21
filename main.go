@@ -110,6 +110,11 @@ func main() {
 			Usage:  "Secret ECS environment-variables",
 			EnvVar: "PLUGIN_SECRET_ENVIRONMENT_VARIABLES",
 		},
+		cli.StringSliceFlag{
+			Name:   "secrets-manager-variables",
+			Usage:  "Environment-variables from AWS Secrets manager",
+			EnvVar: "PLUGIN_SECRETS_MANAGER_VARIABLES",
+		},
 		cli.Int64Flag{
 			Name:   "cpu",
 			Usage:  "The number of cpu units to reserve for the container",
@@ -250,6 +255,7 @@ func run(c *cli.Context) error {
 		PortMappings:                 c.StringSlice("port-mappings"),
 		Environment:                  c.StringSlice("environment-variables"),
 		SecretEnvironment:            c.StringSlice("secret-environment-variables"),
+		SecretsManagerEnvironment:    c.StringSlice("secrets-manager-variables"),
 		EntryPoint:                   c.StringSlice("entry-point"),
 		Labels:                       c.StringSlice("labels"),
 		CPU:                          c.Int64("cpu"),
