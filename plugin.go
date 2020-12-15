@@ -341,6 +341,7 @@ func (p *Plugin) Exec() error {
 		params.RequiresCompatibilities = aws.StringSlice(compatibilitySlice)
 	}
         // placement constraints
+	if len(p.PlacementConstraints) != 0 {
 	var placementConstraint []placementConstraintsTemplate
 	err := json.Unmarshal([]byte(p.PlacementConstraints), &placementConstraint)
 	if err != nil {
@@ -353,6 +354,7 @@ func (p *Plugin) Exec() error {
 		pc.SetExpression(constraint.Expression)
 		params.PlacementConstraints = append(params.PlacementConstraints, &pc)
 	}
+        }
 
 	if len(p.TaskCPU) != 0 {
 		params.Cpu = aws.String(p.TaskCPU)

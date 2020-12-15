@@ -19,7 +19,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `memory_reservation`, The soft limit (in MiB) of memory to reserve for the container. Defaults to 128
 * `environment_variables` - List of Environment Variables to be passed to the container, format is `NAME=VALUE`
 * `deployment_configuration` - Deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks, format is `minimumHealthyPercent maximumPercent`
-* `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster
+* `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster. Set it to a negative number to not modify current desired_count in the service.
 * `log_driver` - The log driver to use for the container
 * `log_options` - The configuration options to send to the log driver
 * `labels` - A key/value map of labels to add to the container
