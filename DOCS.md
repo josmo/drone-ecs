@@ -68,6 +68,7 @@ steps:
       port_mappings:
         - 80 9000
       memoryReservation: 128
+      placement_constraints: [{"type": "memberOf","expression": "attribute:test == true"}]
       cpu: 1024
       desired_count: 1
       deployment_configuration: 50 200
