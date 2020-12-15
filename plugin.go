@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -53,6 +54,7 @@ type Plugin struct {
 	Ulimits                   []string
 	MountPoints               []string
 	Volumes                   []string
+	PlacementConstraints      string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -64,6 +66,12 @@ type Plugin struct {
 	// ServiceNetworkSubnets represents the VPC security groups to use when
 	// running awsvpc network mode.
 	ServiceNetworkSubnets []string
+}
+
+// Struct for placement constraints.
+type placementConstraintsTemplate struct {
+	Type       string `json:"type"`
+	Expression string `json:"expression"`
 }
 
 const (
@@ -238,7 +246,7 @@ func (p *Plugin) Exec() error {
 	for _, envVar := range p.SecretsManagerEnvironment {
 		parts := strings.SplitN(envVar, "=", 2)
 		pair := ecs.Secret{
-			Name:  aws.String(strings.Trim(parts[0], " ")),
+			Name:      aws.String(strings.Trim(parts[0], " ")),
 			ValueFrom: aws.String(strings.Trim(parts[1], " ")),
 		}
 		definition.Secrets = append(definition.Secrets, &pair)
@@ -331,6 +339,19 @@ func (p *Plugin) Exec() error {
 
 	if cleanedCompatibilities != "" && len(compatibilitySlice) != 0 {
 		params.RequiresCompatibilities = aws.StringSlice(compatibilitySlice)
+	}
+        // placement constraints
+	var placementConstraint []placementConstraintsTemplate
+	err := json.Unmarshal([]byte(p.PlacementConstraints), &placementConstraint)
+	if err != nil {
+		panic(err)
+	}
+	for _, constraint := range placementConstraint {
+		pc := ecs.TaskDefinitionPlacementConstraint{}
+		// distinctInstance constraint can only be specified when launching a task or creating a service. So, currently, the only available type is memberOf
+		pc.SetType(constraint.Type)
+		pc.SetExpression(constraint.Expression)
+		params.PlacementConstraints = append(params.PlacementConstraints, &pc)
 	}
 
 	if len(p.TaskCPU) != 0 {

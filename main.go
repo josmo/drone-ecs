@@ -231,6 +231,11 @@ func main() {
 			Usage:  "ECS volume definitions",
 			EnvVar: "PLUGIN_VOLUMES",
 		},
+		cli.StringFlag{
+			Name:   "placement-constraints",
+			Usage:  "json array of placement constraints",
+			EnvVar: "PLUGIN_PLACEMENT_CONSTRAINTS",
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -280,6 +285,7 @@ func run(c *cli.Context) error {
 		Ulimits:                      c.StringSlice("ulimits"),
 		MountPoints:                  c.StringSlice("mount-points"),
 		Volumes:                      c.StringSlice("volumes"),
+		PlacementConstraints:         c.String("placement-constraints"),
 	}
 	return plugin.Exec()
 }
