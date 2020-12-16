@@ -82,6 +82,7 @@ const (
 	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
 	maximumPercentBaseParseErr        = "error parsing deployment_configuration maximumPercent: "
 	readOnlyBoolBaseParseErr          = "error parsing mount_points readOnly: "
+	placementConstraintsBaseParseErr  = "error parsing placement_constraints json: "
 )
 
 func (p *Plugin) Exec() error {
@@ -341,11 +342,13 @@ func (p *Plugin) Exec() error {
 		params.RequiresCompatibilities = aws.StringSlice(compatibilitySlice)
 	}
         // placement constraints
-	if len(p.PlacementConstraints) != 0 {
+	if p.PlacementConstraints != "" && len(p.PlacementConstraints) != 0 {
 	var placementConstraint []placementConstraintsTemplate
-	err := json.Unmarshal([]byte(p.PlacementConstraints), &placementConstraint)
-	if err != nil {
-		panic(err)
+	constraintParsingError := json.Unmarshal([]byte(p.PlacementConstraints), &placementConstraint)
+	if constraintParsingError != nil {
+		constraintsParseWrappedErr := errors.New(placementConstraintsBaseParseErr + constraintParsingError.Error())
+		return constraintsParseWrappedErr
+
 	}
 	for _, constraint := range placementConstraint {
 		pc := ecs.TaskDefinitionPlacementConstraint{}
