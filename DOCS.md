@@ -19,7 +19,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `memory_reservation`, The soft limit (in MiB) of memory to reserve for the container. Defaults to 128
 * `environment_variables` - List of Environment Variables to be passed to the container, format is `NAME=VALUE`
 * `deployment_configuration` - Deployment parameters that control how many tasks run during the deployment and the ordering of stopping and starting tasks, format is `minimumHealthyPercent maximumPercent`
-* `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster
+* `desired_count` - The number of instantiations of the specified task definition to place and keep running on your cluster. Set it to a negative number to not modify current desired_count in the service.
 * `log_driver` - The log driver to use for the container
 * `log_options` - The configuration options to send to the log driver
 * `labels` - A key/value map of labels to add to the container
@@ -37,6 +37,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `ulimits` - The Ulimit property specifies the ulimit settings to pass to the container. This is an array of strings in the format: `name softLimit hardLimit` where name is one of: core, cpu, data, fsize, locks, memlock, msgqueue, nice, nofile, nproc, rss, rtprio, rttime, sigpending, stack and soft/hard limits are integers.
 * `mount_points` - Mount points from host to container, format is `sourceVolume containerPath readOnly` where `sourceVolume`, `containerPath` are strings, `readOnly` is string [`true`, `false`]
 * `volumes` - Bind Mount Volumes, format is `name sourcePath` both values are strings. Note with FARGATE launch type, you only provide the name of the volume, not the `sourcePath`
+* `placement_constraints` - Ecs task definition placement constraints. Specify an array of constraints as a single string. Note that "distinctInstance" type can only be specified during run task or in service. Not inside a task definition. 
 
 
 ## Example
@@ -67,6 +68,7 @@ steps:
       port_mappings:
         - 80 9000
       memoryReservation: 128
+      placement_constraints: [{"type": "memberOf","expression": "attribute:test == true"}]
       cpu: 1024
       desired_count: 1
       deployment_configuration: 50 200

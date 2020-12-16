@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -53,6 +54,7 @@ type Plugin struct {
 	Ulimits                   []string
 	MountPoints               []string
 	Volumes                   []string
+	PlacementConstraints      string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
 	ServiceNetworkAssignPublicIp string
@@ -66,6 +68,12 @@ type Plugin struct {
 	ServiceNetworkSubnets []string
 }
 
+// Struct for placement constraints.
+type placementConstraintsTemplate struct {
+	Type       string `json:"type"`
+	Expression string `json:"expression"`
+}
+
 const (
 	softLimitBaseParseErr             = "error parsing ulimits softLimit: "
 	hardLimitBaseParseErr             = "error parsing ulimits hardLimit: "
@@ -74,6 +82,7 @@ const (
 	minimumHealthyPercentBaseParseErr = "error parsing deployment_configuration minimumHealthyPercent: "
 	maximumPercentBaseParseErr        = "error parsing deployment_configuration maximumPercent: "
 	readOnlyBoolBaseParseErr          = "error parsing mount_points readOnly: "
+	placementConstraintsBaseParseErr  = "error parsing placement_constraints json: "
 )
 
 func (p *Plugin) Exec() error {
@@ -238,7 +247,7 @@ func (p *Plugin) Exec() error {
 	for _, envVar := range p.SecretsManagerEnvironment {
 		parts := strings.SplitN(envVar, "=", 2)
 		pair := ecs.Secret{
-			Name:  aws.String(strings.Trim(parts[0], " ")),
+			Name:      aws.String(strings.Trim(parts[0], " ")),
 			ValueFrom: aws.String(strings.Trim(parts[1], " ")),
 		}
 		definition.Secrets = append(definition.Secrets, &pair)
@@ -332,6 +341,23 @@ func (p *Plugin) Exec() error {
 	if cleanedCompatibilities != "" && len(compatibilitySlice) != 0 {
 		params.RequiresCompatibilities = aws.StringSlice(compatibilitySlice)
 	}
+        // placement constraints
+	if p.PlacementConstraints != "" && len(p.PlacementConstraints) != 0 {
+	var placementConstraint []placementConstraintsTemplate
+	constraintParsingError := json.Unmarshal([]byte(p.PlacementConstraints), &placementConstraint)
+	if constraintParsingError != nil {
+		constraintsParseWrappedErr := errors.New(placementConstraintsBaseParseErr + constraintParsingError.Error())
+		return constraintsParseWrappedErr
+
+	}
+	for _, constraint := range placementConstraint {
+		pc := ecs.TaskDefinitionPlacementConstraint{}
+		// distinctInstance constraint can only be specified when launching a task or creating a service. So, currently, the only available type is memberOf
+		pc.SetType(constraint.Type)
+		pc.SetExpression(constraint.Expression)
+		params.PlacementConstraints = append(params.PlacementConstraints, &pc)
+	}
+        }
 
 	if len(p.TaskCPU) != 0 {
 		params.Cpu = aws.String(p.TaskCPU)
