@@ -231,6 +231,11 @@ func main() {
 			Usage:  "ECS volume definitions",
 			EnvVar: "PLUGIN_VOLUMES",
 		},
+		cli.StringSliceFlag{
+			Name:   "efs-volumes",
+			Usage:  "EFS volume definitions",
+			EnvVar: "PLUGIN_EFS_VOLUMES",
+		},
 		cli.StringFlag{
 			Name:   "placement-constraints",
 			Usage:  "json array of placement constraints",
@@ -285,6 +290,7 @@ func run(c *cli.Context) error {
 		Ulimits:                      c.StringSlice("ulimits"),
 		MountPoints:                  c.StringSlice("mount-points"),
 		Volumes:                      c.StringSlice("volumes"),
+		EfsVolumes:                   c.StringSlice("efs-volumes"),
 		PlacementConstraints:         c.String("placement-constraints"),
 	}
 	return plugin.Exec()
