@@ -174,13 +174,12 @@ func (p *Plugin) Exec() error {
 	for _, efsElem := range p.EfsVolumes {
 	    cleanedEfs := strings.Trim(efsElem, " ")
 	    parts := strings.SplitN(cleanedEfs, " ", 3)
-	    efs := ecs.EFSVolumeConfiguration {
-	        FileSystemId: aws.String(parts[1]),
-	        RootDirectory: aws.String(parts[2]),
-	    }
 	    vol := ecs.Volume{
             Name: aws.String(parts[0]),
-            EfsVolumeConfiguration: efs,
+	    }
+	    vol.EfsVolumeConfiguration = &ecs.EFSVolumeConfiguration {
+	        FileSystemId: aws.String(parts[1]),
+	        RootDirectory: aws.String(parts[2]),
 	    }
 
 	    volumes = append(volumes, &vol)
