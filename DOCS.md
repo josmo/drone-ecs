@@ -78,8 +78,10 @@ steps:
       # this mount_point and volumes config will give drone_runner_docker access to docker.sock
       mount_points:
         - dockersock /var/run/docker.sock false
+        - myefs /mounted-efs false
       volumes:
-        - dockersock /var/run/docker.sock      
+        - dockersock /var/run/docker.sock
+        - myefs efs-efsid /
       secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
     # declaring the environment is necessary to get secret_environment_variables to work  
     environment:
