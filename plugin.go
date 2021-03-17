@@ -54,6 +54,7 @@ type Plugin struct {
 	Ulimits                   []string
 	MountPoints               []string
 	Volumes                   []string
+	EfsVolumes                []string
 	PlacementConstraints      string
 
 	// ServiceNetworkAssignPublicIP - Whether the task's elastic network interface receives a public IP address. The default value is DISABLED.
@@ -167,6 +168,21 @@ func (p *Plugin) Exec() error {
 		}
 
 		volumes = append(volumes, &vol)
+	}
+
+	// EFS Volumes
+	for _, efsElem := range p.EfsVolumes {
+	    cleanedEfs := strings.Trim(efsElem, " ")
+	    parts := strings.SplitN(cleanedEfs, " ", 3)
+	    vol := ecs.Volume{
+            Name: aws.String(parts[0]),
+	    }
+	    vol.EfsVolumeConfiguration = &ecs.EFSVolumeConfiguration {
+	        FileSystemId: aws.String(parts[1]),
+	        RootDirectory: aws.String(parts[2]),
+	    }
+
+	    volumes = append(volumes, &vol)
 	}
 
 	// Mount Points
