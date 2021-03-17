@@ -81,6 +81,7 @@ steps:
         - myefs /mounted-efs false
       volumes:
         - dockersock /var/run/docker.sock
+      efs_volumes:
         - myefs efs-efsid /
       secrets: [AWS_SECRET_KEY, AWS_ACCESS_KEY]
     # declaring the environment is necessary to get secret_environment_variables to work  
