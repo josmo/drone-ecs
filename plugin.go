@@ -67,7 +67,6 @@ type Plugin struct {
 	// ServiceNetworkSubnets represents the VPC security groups to use when
 	// running awsvpc network mode.
 	ServiceNetworkSubnets []string
-
 	Privileged           bool
 }
 
@@ -120,7 +119,7 @@ func (p *Plugin) Exec() error {
 		p.Privileged = false
 	}
 
-	definition := ecs.ContainerDefinition--{
+	definition := ecs.ContainerDefinition{
 		Command: []*string{},
 
 		DnsSearchDomains:      []*string{},
