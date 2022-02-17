@@ -66,6 +66,8 @@ type Plugin struct {
 	// ServiceNetworkSubnets represents the VPC security groups to use when
 	// running awsvpc network mode.
 	ServiceNetworkSubnets []string
+
+	Privileged           bool
 }
 
 // Struct for placement constraints.
@@ -112,7 +114,12 @@ func (p *Plugin) Exec() error {
 		p.ContainerName = p.Family + "-container"
 	}
 
-	definition := ecs.ContainerDefinition{
+	// Fargate doesn't support privileged mode
+	if (p.Compatibilities == "FARGATE") {
+		p.Privileged = false
+	}
+
+	definition := ecs.ContainerDefinition--{
 		Command: []*string{},
 
 		DnsSearchDomains:      []*string{},
@@ -135,6 +142,7 @@ func (p *Plugin) Exec() error {
 		//User: aws.String("String"),
 		VolumesFrom: []*ecs.VolumeFrom{},
 		//WorkingDirectory: aws.String("String"),
+		Privileged: aws.Bool(p.Privileged),
 	}
 	volumes := []*ecs.Volume{}
 
