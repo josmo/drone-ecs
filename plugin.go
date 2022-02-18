@@ -116,7 +116,10 @@ func (p *Plugin) Exec() error {
 
 	// Fargate doesn't support privileged mode
 	if (p.Compatibilities == "FARGATE") {
-		p.Privileged = false
+		if (p.Privileged) {
+			fmt.Println("Privileged mode applicable only for EC2 launch type! Ignoring parameter: privileged.")
+			p.Privileged = false
+		}
 	}
 
 	definition := ecs.ContainerDefinition{
