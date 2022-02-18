@@ -39,6 +39,7 @@ Use this plugin for deploying a docker container application to AWS EC2 Containe
 * `volumes` - Bind Mount Volumes, format is `name sourcePath` both values are strings. Note with FARGATE launch type, you only provide the name of the volume, not the `sourcePath`
 * `efs_volumes` - Define EFS volume, format: `name efs-id root-directory`. Current configuration doesn't support encryption in transit.
 * `placement_constraints` - Ecs task definition placement constraints. Specify an array of constraints as a single string. Note that "distinctInstance" type can only be specified during run task or in service. Not inside a task definition. 
+* `privileged` - Container will run in privileged mode (applicable only for EC2 launch type)
 
 
 ## Example
